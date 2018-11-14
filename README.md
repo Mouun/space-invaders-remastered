@@ -22,7 +22,5 @@ Nous avons déjà un [site](http://www.classicgaming.cc/classics/space-invaders/
 
 
 
-Nous allons utiliser l'architecture du projet que Filipe a rendu en cours pour commencer 
-
-
+Nous allons utiliser l'architecture du projet que Filipe a rendu en cours pour commencer
 
