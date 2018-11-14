@@ -10,9 +10,9 @@ Space Invaders Remastered est une version revisitée du jeu original Space Invad
 
 Celle-ci aura pour but d'améliorer le jeu duquel il s'inspire, en ajoutant par exemple:
 
-- Des graphismes améliorés
+- Des graphismes améliorés (forme des ennemis à tuer)
 - Des modes de jeu en plus
-- De nouveaux types d'ennemis 
+- De nouveaux types d'ennemis
 
 Nous comptons utiliser du JS pur ou des librairies si besoin (exemple: [phaser.io](http://phaser.io/) / [melon.JS](http://melonjs.org/))
 
