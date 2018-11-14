@@ -1,4 +1,4 @@
-# space-invaders-remastered
+﻿# space-invaders-remastered
 
 Nous sommes trois dans le groupe:
 
@@ -7,7 +7,6 @@ Nous sommes trois dans le groupe:
 - Filipe Doutel Silva
 
 Space Invaders Remastered est une version revisitée du jeu original Space Invaders.
-Modif vaisseau
 Celle-ci aura pour but d'améliorer le jeu duquel il s'inspire, en ajoutant par exemple:
 
 - Des graphismes améliorés (forme des ennemis à tuer)
