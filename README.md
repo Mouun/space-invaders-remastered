@@ -6,8 +6,6 @@ Nous sommes trois dans le groupe:
 - Marion Poesy
 - Filipe Doutel Silva
 
-
-
 Space Invaders Remastered est une version revisitée du jeu original Space Invaders.
 
 Celle-ci aura pour but d'améliorer le jeu duquel il s'inspire, en ajoutant par exemple:
