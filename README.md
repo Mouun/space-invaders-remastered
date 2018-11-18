@@ -1,4 +1,4 @@
-﻿# space-invaders-remastered
+# space-invaders-remastered
 
 Nous sommes trois dans le groupe:
 
