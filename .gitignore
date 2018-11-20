@@ -8,3 +8,4 @@
 out
 gen
 .gitignore
+node_modules
