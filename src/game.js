@@ -22,6 +22,11 @@ let game = new Phaser.Game(config);
 let cursor;
 let playerSpaceship;
 let bulletsGroup;
+let speed;
+let lastFired = 0;
+let bulletObject;
+let moveSpeed = 5;
+let shootRate = 200;
 
 //Method where I can load my assets
 function preload() {
@@ -68,41 +73,68 @@ function create() {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    for(let j = 0; j < 700/4; j+=20) {
-        for(let i = 0; i < 700; i +=20) {
-            ennemis = this.add.sprite(i, j, 'ennemis');
-            ennemis.setScale(2);
+    let Bullet = new Phaser.Class({
+
+        Extends: Phaser.GameObjects.Image,
+
+        initialize: function Bullet(scene) {
+            bulletObject = Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
+
+            this.speed = Phaser.Math.GetSpeed(400, 1);
+        },
+
+        fire: function (x, y) {
+            this.setPosition(x, y - 50);
+
+            this.setActive(true);
+            this.setVisible(true);
+        },
+
+        update: function (time, delta) {
+            this.y -= this.speed * delta;
+
+            if (this.y < -50) {
+                this.setActive(false);
+                this.setVisible(false);
+            }
         }
-    }
+
+    });
+
+    bulletsGroup = this.add.group({
+        classType: Bullet,
+        maxSize: 10,
+        runChildUpdate: true
+    });
+
+    speed = Phaser.Math.GetSpeed(300, 1);
 }
 
-function update() {
-    
+function update(time, delta) {
+
     if (cursors.left.isDown) {
         if (playerSpaceship.x < 0) {
             playerSpaceship.x = 700;
         }
-        playerSpaceship.anims.play('left', true);
-        playerSpaceship.x -= 1;
-    }
-    else if (cursors.right.isDown) {
-        if (playerSpaceship.x > 700) {
-            playerSpaceship.x = 0;
+        spaceship.anims.play('left', true);
+        spaceship.x -= moveSpeed;
+    } else if (cursors.right.isDown) {
+        if (spaceship.x > 700) {
+            spaceship.x = 0;
         }
-        playerSpaceship.anims.play('right', true);
-        playerSpaceship.x += 1;
-    } else if (cursors.up.isDown) {
-        if (playerSpaceship.y < 0) {
-            playerSpaceship.y = 700;
-        }
-        playerSpaceship.y -= 1;
-    } else if (cursors.down.isDown) {
-        if (playerSpaceship.y > 700) {
-            playerSpaceship.y = 0;
-        }
-        playerSpaceship.y += 1;
+        spaceship.anims.play('right', true);
+        spaceship.x += moveSpeed;
     } else {
         playerSpaceship.anims.play('turn');
+    }
+
+    if (cursors.up.isDown && time > lastFired) {
+        let bullet = bulletsGroup.get();
+
+        if (bullet) {
+            bullet.fire(spaceship.x, spaceship.y);
+            lastFired = time + shootRate;
+        }
     }
 
 }
