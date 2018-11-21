@@ -1,16 +1,21 @@
-/**
- * Designed with <3 by Filipe Doutel Silva and Sörel Nadaud
- * Under Licence MIT
- **/
-
-    //Creation of the first scene, the one wich contain the game scene
-
+//Creation des params de la partie
 let config = {
-        type: Phaser.AUTO,
-        width: 700,
-        height: 700,
-        scene: { preload: preload, create: create, update: update },
-    };
+    type: Phaser.AUTO,
+    width: 700,
+    height: 700,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: {y: 300},
+            debug: false
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    },
+};
 
 let game = new Phaser.Game(config);
 
