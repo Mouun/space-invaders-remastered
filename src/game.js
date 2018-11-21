@@ -1,34 +1,32 @@
-/**
- * Designed with <3 by Filipe Doutel Silva and Sörel Nadaud
- * Under Licence MIT
- **/
-
-    //Creation of the first scene, the one wich contain the game scene
-
-let config = {
-        type: Phaser.AUTO,
-        width: 700,
-        height: 700,
-        scene: { preload: preload, create: create, update: update },
-    };
+// Initialisation
+let config = 
+{
+    type: Phaser.AUTO,
+    width: 700,
+    height: 700,
+    scene: 
+    { 
+        preload: preload, 
+        create: create, 
+        update: update 
+    },
+};
 
 let game = new Phaser.Game(config);
-
 
 let scene = new Phaser.Scene('backgroundScene');
 let cursor;
 let spaceship;
 let ennemis;
 
-//Method where I can load my assets
 function preload() 
 {
     this.load.spritesheet('spaceship', './assets/spaceship.png', {frameWidth: 32, frameHeight: 48});
     this.load.image('ennemis', './assets/ennemis.png', {frameWidth: 32, frameHeight: 48});
 }
 
-//Method executed once just after preload
-function create() {
+function create() 
+{
     spaceship = this.add.sprite(340, 650, 'spaceship');
 
     this.anims.create({
@@ -51,17 +49,17 @@ function create() {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    for(let j = 0; j < 700/4; j+=20) 
-    {
-        for(let i = 0; i < 700; i +=20) 
-        {
-            ennemis = this.add.sprite(i, j, 'ennemis');
-            ennemis.setScale(0.1);
-        }
-    }
+    ennemi = this.physics.add.group
+    ({
+        key: 'ennemis',
+        repeat: 10,
+        setXY: {x:12, y :50, stepX: 70}
+    });
+
 }
 
-function update() {
+function update() 
+{
     
     if (cursors.left.isDown) {
         spaceship.anims.play('left', true);
