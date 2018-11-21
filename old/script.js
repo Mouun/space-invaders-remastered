@@ -56,7 +56,7 @@ function creerFlote() {
             tableauEnnemis.push(ennemi);
         }
     }
-    
+
 }
 
 
@@ -100,11 +100,11 @@ function dessinerJeu() {
     //Vérification de la colision entre une balle et un ennemi
     tableauBalles.forEach((b) => {
         tableauEnnemis.forEach((e) => {
-            if ((e.x < b.x && 
-                b.x < e.x+10) && (e.y < b.y && b.y < e.y+10) || 
-                (e.x < b.x+4 && 
-                b.x+4 < e.x+10) && (e.y < b.y && b.y < e.y+10) 
-                ) {
+            if ((e.x < b.x &&
+                b.x < e.x+10) && (e.y < b.y && b.y < e.y+10) ||
+                (e.x < b.x+4 &&
+                    b.x+4 < e.x+10) && (e.y < b.y && b.y < e.y+10)
+            ) {
                 ennemiDeath.play();
                 tableauEnnemis.splice(tableauEnnemis.indexOf(e), 1);
                 tableauBalles.splice(tableauBalles.indexOf(b), 1);
@@ -147,7 +147,7 @@ function checkKey(e) {
             vaisseau.left();
         }
     }
-    
+
     if (tableauQueue["39"]) {
         if(vaisseau.x+10 < canvas.width) {
             vaisseau.right();
