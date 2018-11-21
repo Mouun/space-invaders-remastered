@@ -20,19 +20,36 @@ let config = {
 let game = new Phaser.Game(config);
 
 let cursor;
-let spaceship;
+let playerSpaceship;
 let bulletsGroup;
+let speed;
+let lastFired = 0;
+let bulletObject;
+let moveSpeed = 5;
+let shootRate = 200;
 
 //Method where I can load my assets
 function preload() {
-    this.load.spritesheet('spaceship', './assets/spaceship.png', {frameWidth: 32, frameHeight: 48});
-    this.load.image('ennemis', './assets/ennemis.png', {frameWidth: 32, frameHeight: 48});
+    this.load.image('upgradeLvl1', './assets/player_level1.png', {frameWidth: 28, frameHeight: 54});
+    this.load.image('upgradeLvl1Left', './assets/player_level1_left.png', {frameWidth: 28, frameHeight: 54});
+    this.load.image('upgradeLvl1Right', './assets/player_level1_right.png', {frameWidth: 28, frameHeight: 54});
+    this.load.image('upgradeLvl2', './assets/player_level2.png', {frameWidth: 59, frameHeight: 67});
+    this.load.image('upgradeLvl2Left', './assets/player_level2_left.png', {frameWidth: 59, frameHeight: 67});
+    this.load.image('upgradeLvl2Right', './assets/player_level2_right.png', {frameWidth: 59, frameHeight: 67});
+    this.load.image('upgradeLvl3', './assets/player_level3.png', {frameWidth: 65, frameHeight: 79});
+    this.load.image('upgradeLvl3Left', './assets/player_level3_left.png', {frameWidth: 65, frameHeight: 79});
+    this.load.image('upgradeLvl3Right', './assets/player_level3_right.png', {frameWidth: 65, frameHeight: 79});
+    this.load.image('upgradeLvl4', './assets/player_level4.png', {frameWidth: 69, frameHeight: 110});
+    this.load.image('upgradeLvl4Left', './assets/player_level4_left.png', {frameWidth: 69, frameHeight: 110});
+    this.load.image('upgradeLvl4Right', './assets/player_level4_right.png', {frameWidth: 69, frameHeight: 110});
+    this.load.image('enemy', './assets/ennemis.png', {frameWidth: 512, frameHeight: 512});
+    this.load.image('bullet', './assets/laser_green.png');
 }
 
 //Méthode exécutée juste après preload
 function create() {
     //Mise en place du vaisseau et de l'annimation
-    spaceship = this.add.sprite(340, 650, 'spaceship');
+    playerSpaceship = this.add.sprite(340, 650, 'upgradeLvl1');
 
     console.log(game);
     console.log(this);
@@ -41,61 +58,84 @@ function create() {
 
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNumbers('spaceship', {start: 0, end: 3}),
-        frameRate: 10,
-        repeat: -1
+        frames: [ {key: "upgradeLvl1Left", frame: 1}],
+        frameRate: 60
     });
     this.anims.create({
         key: 'turn',
-        frames: [{key: 'spaceship', frame: 5}],
-        frameRate: 20
+        frames: [{key: 'upgradeLvl1', frame: 1}],
+        frameRate: 60
     });
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('spaceship', {start: 8, end: 11}),
-        frameRate: 10,
-        repeat: -1
+        frames: [ {key: "upgradeLvl1Right", frame: 1}],
+        frameRate: 60
     });
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    for(let j = 0; j < 700/4; j+=20) 
-    {
-        for(let i = 0; i < 700; i +=20) 
-        {
-            ennemis = this.add.sprite(i, j, 'ennemis');
-            ennemis.setScale(0.1);
+    let Bullet = new Phaser.Class({
+
+        Extends: Phaser.GameObjects.Image,
+
+        initialize: function Bullet(scene) {
+            bulletObject = Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
+
+            this.speed = Phaser.Math.GetSpeed(400, 1);
+        },
+
+        fire: function (x, y) {
+            this.setPosition(x, y - 50);
+
+            this.setActive(true);
+            this.setVisible(true);
+        },
+
+        update: function (time, delta) {
+            this.y -= this.speed * delta;
+
+            if (this.y < -50) {
+                this.setActive(false);
+                this.setVisible(false);
+            }
         }
-    }
+
+    });
+
+    bulletsGroup = this.add.group({
+        classType: Bullet,
+        maxSize: 10,
+        runChildUpdate: true
+    });
+
+    speed = Phaser.Math.GetSpeed(300, 1);
 }
 
-function update() {
-    
+function update(time, delta) {
+
     if (cursors.left.isDown) {
-        if (spaceship.x < 0) {
-            spaceship.x = 700;
+        if (playerSpaceship.x < 0) {
+            playerSpaceship.x = 700;
         }
-        spaceship.anims.play('left', true);
-        spaceship.x -= 1;
-    }
-    else if (cursors.right.isDown) {
-        if (spaceship.x > 700) {
-            spaceship.x = 0;
+        playerSpaceship.anims.play('left', true);
+        playerSpaceship.x -= moveSpeed;
+    } else if (cursors.right.isDown) {
+        if (playerSpaceship.x > 700) {
+            playerSpaceship.x = 0;
         }
-        spaceship.anims.play('right', true);
-        spaceship.x += 1;
-    } else if (cursors.up.isDown) {
-        if (spaceship.y < 0) {
-            spaceship.y = 700;
-        }
-        spaceship.y -= 1;
-    } else if (cursors.down.isDown) {
-        if (spaceship.y > 700) {
-            spaceship.y = 0;
-        }
-        spaceship.y += 1;
+        playerSpaceship.anims.play('right', true);
+        playerSpaceship.x += moveSpeed;
     } else {
-        spaceship.anims.play('turn');
+        playerSpaceship.anims.play('turn');
+    }
+
+    if (cursors.up.isDown && time > lastFired) {
+        let bullet = bulletsGroup.get();
+
+        if (bullet) {
+            bullet.fire(playerSpaceship.x, playerSpaceship.y);
+            lastFired = time + shootRate;
+        }
     }
 
 }
