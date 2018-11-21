@@ -1,14 +1,19 @@
-// Initialisation
-let config = 
-{
+//Creation des params de la partie
+let config = {
     type: Phaser.AUTO,
     width: 700,
     height: 700,
-    scene: 
-    { 
-        preload: preload, 
-        create: create, 
-        update: update 
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: {y: 300},
+            debug: false
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
     },
 };
 
