@@ -19,20 +19,24 @@ let config = {
 
 let game = new Phaser.Game(config);
 
-let scene = new Phaser.Scene('backgroundScene');
 let cursor;
 let spaceship;
-let ennemis;
+let bulletsGroup;
 
-function preload() 
-{
+//Method where I can load my assets
+function preload() {
     this.load.spritesheet('spaceship', './assets/spaceship.png', {frameWidth: 32, frameHeight: 48});
-    this.load.image('ennemis', './assets/ennemis.png', {frameWidth: 32, frameHeight: 48});
 }
 
-function create() 
-{
+//Méthode exécutée juste après preload
+function create() {
+    //Mise en place du vaisseau et de l'annimation
     spaceship = this.add.sprite(340, 650, 'spaceship');
+
+    console.log(game);
+    console.log(this);
+
+    //this.add.group();
 
     this.anims.create({
         key: 'left',
@@ -53,31 +57,34 @@ function create()
     });
 
     cursors = this.input.keyboard.createCursorKeys();
-
-    ennemi = this.physics.add.group
-    ({
-        key: 'ennemis',
-        repeat: 10,
-        setXY: {x:12, y :50, stepX: 70}
-    });
-
 }
 
-function update() 
-{
-    
+function update() {
+
     if (cursors.left.isDown) {
+        if (spaceship.x < 0) {
+            spaceship.x = 700;
+        }
         spaceship.anims.play('left', true);
         spaceship.x -= 1;
     }
     else if (cursors.right.isDown) {
+        if (spaceship.x > 700) {
+            spaceship.x = 0;
+        }
         spaceship.anims.play('right', true);
         spaceship.x += 1;
     } else if (cursors.up.isDown) {
+        if (spaceship.y < 0) {
+            spaceship.y = 700;
+        }
         spaceship.y -= 1;
     } else if (cursors.down.isDown) {
+        if (spaceship.y > 700) {
+            spaceship.y = 0;
+        }
         spaceship.y += 1;
-    }else {
+    } else {
         spaceship.anims.play('turn');
     }
 
