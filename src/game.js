@@ -43,6 +43,7 @@ function preload() {
     this.load.image('upgradeLvl4Left', './assets/player_level4_left.png', {frameWidth: 69, frameHeight: 110});
     this.load.image('upgradeLvl4Right', './assets/player_level4_right.png', {frameWidth: 69, frameHeight: 110});
     this.load.image('enemy', './assets/ennemis.png', {frameWidth: 512, frameHeight: 512});
+    this.load.image('bullet', './assets/laser_green.png');
 }
 
 //Méthode exécutée juste après preload
@@ -116,14 +117,14 @@ function update(time, delta) {
         if (playerSpaceship.x < 0) {
             playerSpaceship.x = 700;
         }
-        spaceship.anims.play('left', true);
-        spaceship.x -= moveSpeed;
+        playerSpaceship.anims.play('left', true);
+        playerSpaceship.x -= moveSpeed;
     } else if (cursors.right.isDown) {
-        if (spaceship.x > 700) {
-            spaceship.x = 0;
+        if (playerSpaceship.x > 700) {
+            playerSpaceship.x = 0;
         }
-        spaceship.anims.play('right', true);
-        spaceship.x += moveSpeed;
+        playerSpaceship.anims.play('right', true);
+        playerSpaceship.x += moveSpeed;
     } else {
         playerSpaceship.anims.play('turn');
     }
@@ -132,7 +133,7 @@ function update(time, delta) {
         let bullet = bulletsGroup.get();
 
         if (bullet) {
-            bullet.fire(spaceship.x, spaceship.y);
+            bullet.fire(playerSpaceship.x, playerSpaceship.y);
             lastFired = time + shootRate;
         }
     }
