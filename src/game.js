@@ -61,9 +61,9 @@ function create() {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    for(let j = 0; j < 700/4; j+=20) 
+    for(let j = 50; j < 700/4; j+=50) 
     {
-        for(let i = 0; i < 700; i +=20) 
+        for(let i = 20; i < 700; i +=50) 
         {
             ennemis = this.add.sprite(i, j, 'ennemis');
             ennemis.setScale(0.1);
@@ -71,7 +71,14 @@ function create() {
     }
 }
 
+function descend() {
+
+    ennemis .y += 10;
+
+}
+
 function update() {
+
 
     if (cursors.left.isDown) {
         if (spaceship.x < 0) {
