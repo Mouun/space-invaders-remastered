@@ -134,9 +134,6 @@ let GF = function () {
 
         ctx = canvas.getContext("2d");
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
         initiateGame();
 
         window.addEventListener('keydown', function (event) {
