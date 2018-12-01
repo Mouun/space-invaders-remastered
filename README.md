@@ -13,6 +13,10 @@ Celle-ci aura pour but d'améliorer le jeu duquel il s'inspire, en ajoutant par 
 - Des modes de jeu en plus
 - De nouveaux types d'ennemis
 
+**Nous avons choisi de commencer le développement d'une deuxième version de notre jeu**
+**Une version en JS pure, pour l'instant nous n'avons pas abandonné la version avec phaser**
+**Le développement des deux versions va se poursuivre, si d'autres complications surviennent pendant le développement de la version avec phaser, nous l'abandonnerons au profit de la version en JS Pure**
+
 Nous comptons utiliser du JS pur ou des librairies si besoin (exemple: [phaser.io](http://phaser.io/) / [melon.JS](http://melonjs.org/))
 
 Nous avons déjà un [site](http://www.classicgaming.cc/classics/space-invaders/sounds) qui nous permet de récupérer des images et des sons fidèles au jeu classique.
