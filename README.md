@@ -39,3 +39,22 @@ Concernant les "upgrades" que nous voulont mettre en place sont les suivantes:
 - Une "upgrade" pour changer la vitesse de déplacement du vaisseau
 - Une "upgrade" pour augmenter le nombre de vies du vaisseau
 - Une "upgrade" pour tuer le joueur (une sorte de malus)
+
+
+
+# Informations complémentaires
+
+Deux versions du jeu sont en développement et il est nécessaire de cloner le dépôt pour y accéder :
+
+- Une première version réalisée avec la librairie [phaser.io](http://phaser.io/) qui est consultable sur la branche master dans le répertoire src/
+
+  - Pour le lancer, il est nécessaire d'avoir [yarn](https://yarnpkg.com/lang/fr/) d'installer et d'utiliser la commande à la racine
+
+    ```javascript
+    npm run server
+    ```
+
+- Une seconde version réalisée en Javascript pur qui est consultable sur la branche feature-assets-v-jspure dans le répertoire src/
+
+  - Pour le lancer, il suffit d'ouvrir le fichier index.html dans un navigateur
+
