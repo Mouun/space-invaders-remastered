@@ -27,9 +27,12 @@ let lastFired = 0;
 let bulletObject;
 let moveSpeed = 5;
 let shootRate = 200;
+let starfield;
+let scrollSpeed = 3;
 
 //Method where I can load my assets
 function preload() {
+    this.load.image('starfield', './assets/game_background.png', {frameWidth: game.config.width, frameHeight: game.config.height});
     this.load.image('upgradeLvl1', './assets/player_level1.png', {frameWidth: 28, frameHeight: 54});
     this.load.image('upgradeLvl1Left', './assets/player_level1_left.png', {frameWidth: 28, frameHeight: 54});
     this.load.image('upgradeLvl1Right', './assets/player_level1_right.png', {frameWidth: 28, frameHeight: 54});
@@ -51,7 +54,7 @@ function create() {
     //Mise en place du vaisseau et de l'annimation
     playerSpaceship = this.add.sprite(340, 650, 'upgradeLvl1');
 
-    console.log(game);
+    starfield = this.add.tileSprite(game.config.width / 2, game.config.height / 2, game.config.width, game.config.height, "starfield");
     console.log(this);
 
     //this.add.group();
@@ -113,6 +116,7 @@ function create() {
 
 function update(time, delta) {
 
+    starfield.tilePositionY -= scrollSpeed;
     if (cursors.left.isDown) {
         if (playerSpaceship.x < 0) {
             playerSpaceship.x = 700;
