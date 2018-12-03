@@ -12,10 +12,16 @@ let estMusicPause = false;
 
 
 //Sons et image trouvés sur le site http://www.classicgaming.cc/classics/space-invaders/sounds
-let music = new Audio('https://od.lk/d/MTBfNjU1MTYwODdf/spaceinvaders1.mpeg');
-let shoot = new Audio('https://od.lk/d/MTBfNjU1MTY3NTBf/shoot.mp3');
-let death = new Audio('https://od.lk/d/MTBfNjU1MTY5MDBf/explosion.mp3');
-let ennemiDeath = new Audio('https://od.lk/d/MTBfNjU1MTY4OTVf/invaderkilled.mp3');
+
+let sound = new Howl({
+    src: ['../src/assets/spritesound.mp3'],
+    sprite: {
+        explosion: [0, 940],
+        invaderkill: [1224, 1642],
+        shoot: [2026, 2548],
+        music: [2765, 10167]
+    }
+});
 
 window.onload = function () {
     canvas = document.querySelector("#myCanvas");
@@ -32,7 +38,7 @@ window.onload = function () {
     requestAnimationFrame(dessinerJeu);
     setInterval(moveEnnemies, 100);
     setInterval(setSurchauffe, 300);
-    music.play();
+    sound.play('music');
 };
 
 function setSurchauffe () {
@@ -46,7 +52,7 @@ function moveEnnemies() {
 
 function initiateGame() {
     vaisseau = new Vaisseau();
-    creerFlote()
+    creerFlote();
 }
 
 function creerFlote() {
@@ -88,7 +94,7 @@ function dessinerJeu() {
     //Perdu !
     tableauEnnemis.forEach((r) => {
         if(r.y>270 && !estPerdu) {
-            death.play();
+            sound.play('explosion');
             estPerdu = true;
         }
     });
@@ -105,7 +111,7 @@ function dessinerJeu() {
                 (e.x < b.x+4 &&
                     b.x+4 < e.x+10) && (e.y < b.y && b.y < e.y+10)
             ) {
-                ennemiDeath.play();
+                sound.play('invaderkill');
                 tableauEnnemis.splice(tableauEnnemis.indexOf(e), 1);
                 tableauBalles.splice(tableauBalles.indexOf(b), 1);
                 score++;
@@ -155,7 +161,7 @@ function checkKey(e) {
     }
     if (tableauQueue["32"]) {
         if (!estSurchaufee) {
-            shoot.play();
+            sound.play('shoot');
             tableauBalles.push(new Balle(vaisseau.x+3, vaisseau.y-10));
             estSurchaufee = true;
         }
