@@ -51,8 +51,8 @@ function preload() {
 
 //Méthode exécutée juste après preload
 function create() {
-    //Mise en place du vaisseau et de l'annimation
-    playerSpaceship = this.add.sprite(340, 650, 'upgradeLvl1');
+    window.addEventListener('resize', resize);
+    resize();
 
     starfield = this.add.tileSprite(game.config.width / 2, game.config.height / 2, game.config.width, game.config.height, "starfield");
     console.log(this);
@@ -141,5 +141,17 @@ function update(time, delta) {
             lastFired = time + shootRate;
         }
     }
+function resize() {
+    let canvas = game.canvas;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let wratio = width / height, ratio = canvas.width / canvas.height;
 
+    if (wratio < ratio) {
+        canvas.style.width = width + "px";
+        canvas.style.height = (width / ratio) + "px";
+    } else {
+        canvas.style.width = (height * ratio) + "px";
+        canvas.style.height = height + "px";
+    }
 }
