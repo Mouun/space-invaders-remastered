@@ -9,3 +9,5 @@ out
 gen
 .gitignore
 node_modules
+
+package-lock.json
