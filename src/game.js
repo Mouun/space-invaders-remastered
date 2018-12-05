@@ -106,5 +106,4 @@ function update() {
     } else {
         spaceship.anims.play('turn');
     }
-
 }
