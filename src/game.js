@@ -4,13 +4,10 @@ let config = {
     width: 700,
     height: 700,
     physics: {
-        default: 'matter',
-        matter: {
-            debug: true,
-            gravity: {
-                x: 0,
-                y: 0
-            }
+        default: 'arcade',
+        arcade: {
+            gravity: {y: 0},
+            debug: true
         }
     },
     scene: {
@@ -65,23 +62,6 @@ function create() {
 
     starfield = this.add.tileSprite(gameWidth / 2, gameHeight / 2, gameWidth, gameHeight, "starfield");
 
-    this.matter.world.setBounds();
-    enemies = this.matter.add.image(61, 64, "enemy");
-
-    enemies.setBody({
-        type: 'rectangle',
-        width: 128,
-        height: 128
-    });
-
-    // let canDrag = this.matter.world.nextGroup();
-    // this.matter.add.image(100, 100, 'upgradeLvl3').setCollisionGroup(canDrag);
-
-    // let noDrag = this.matter.world.nextGroup();
-    // let vaisseauA = this.matter.add.image(200, 100, 'enemy').setCollisionGroup(noDrag);
-    // let vaisseauB = this.matter.add.image(400, 100, 'enemy').setCollisionGroup(noDrag);
-    // this.matter.add.image(500, 100, 'enemy').setCollisionGroup(noDrag);
-
     let Bullet = new Phaser.Class({
 
         Extends: Phaser.GameObjects.Image,
@@ -115,14 +95,6 @@ function create() {
         maxSize: 10,
         runChildUpdate: true
     });
-
-    // enemies = this.add.group();
-
-    // createEnemies(nbEnemies);
-
-    // this.matter.world.on('collisionstart', function (event, vaisseauA, vaisseauB) {
-    //
-    // });
 
     //Mlise en place du vaisseau et de l'annimation
     playerSpaceship = this.add.sprite(gameWidth / 2, gameHeight - 45, 'upgradeLvl1');
