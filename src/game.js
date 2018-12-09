@@ -4,13 +4,10 @@ let config = {
     width: window.innerWidth,
     height: window.innerHeight,
     physics: {
-        default: 'matter',
-        matter: {
-            debug: true,
-            gravity: {
-                x: 0,
-                y: 0
-            }
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 0 },
+            debug: true
         }
     },
     scene: {
