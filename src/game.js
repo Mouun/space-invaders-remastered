@@ -85,10 +85,12 @@ function create() {
                 this.setVisible(false);
             }
         }
-
     });
 
-    bulletsGroup = this.add.group({
+    enemies = this.physics.add.group();
+    generateEnemies();
+
+    bulletsGroup = this.physics.add.group({
         classType: Bullet,
         maxSize: 10,
         runChildUpdate: true
@@ -117,7 +119,10 @@ function create() {
 
     speed = Phaser.Math.GetSpeed(300, 1);
 
-    // this.matter.add.mouseSpring({ length: 1, stiffness: 0.6, collisionFilter: { group: canDrag } });
+    this.physics.add.overlap(enemies, bulletsGroup, (enemy, bullet) => {
+        enemy.destroy();
+        bullet.destroy();
+    }, null, this);
 }
 
 function update(time, delta) {
