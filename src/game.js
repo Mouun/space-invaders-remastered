@@ -1,8 +1,8 @@
 //Creation des params de la partie
 let config = {
     type: Phaser.AUTO,
-    width: 700,
-    height: 700,
+    width: window.innerWidth,
+    height: window.innerHeight,
     physics: {
         default: 'matter',
         matter: {
