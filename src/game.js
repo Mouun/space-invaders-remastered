@@ -30,13 +30,36 @@ let bulletObject;
 let moveSpeed = 5;
 let shootRate = 200;
 let starfield;
-let scrollSpeed = 3;
-let possiblePerRow = 0;
-let enemyWidth;
-let espaceBetweenEnemiesWidth = 50;
-let marginTopEnemies = 50;
-let nbRow = 4;
-let enemies;
+let scrollSpeed = 3; // vitesse de defilement du fond
+let marginTopEnemies = 50; // espacement vertical entre le haut de la fenetre de jeu et la premiere ligne d'ennemis
+let enemiesGroup; // le groupe physique (collisions) contenant tous les ennemis des lignes quel que soit leur type
+let gameEnemies = [ // tableau representatif des differents ennemis du jeu et des parametres qui leurs sont associes
+    {
+        spriteName: "ennemi1", // le nom du sprite de l'ennemi
+        enemyWidth: 0, // sa largeur en pixel, initialement a 0, recalculee par la suite
+        spaceBetweenEnemiesWidth: 30, // espacement initial souhaite entre les ennemis de la ligne, recalcule ensuite
+        possiblePerRow: 0 // le nombre maximal d'ennemi de ce type possible sur une seule ligne
+    },
+    {
+        spriteName: "ennemi2",
+        enemyWidth: 0,
+        spaceBetweenEnemiesWidth: 40,
+        possiblePerRow: 0
+    },
+    {
+        spriteName: "ennemi3",
+        enemyWidth: 0,
+        spaceBetweenEnemiesWidth: 45,
+        possiblePerRow: 0
+    },
+    {
+        spriteName: "ennemi4",
+        enemyWidth: 0,
+        spaceBetweenEnemiesWidth: 50,
+        possiblePerRow: 0
+    }
+];
+let verticalSpacing = 70; // Espacement vertical entre chaque ligne d'ennemi
 
 //Method where I can load my assets
 function preload() {
@@ -60,12 +83,14 @@ function preload() {
     this.load.image('ennemi4', './assets/ennemi_4@0.75x.png', { frameWidth: 93, frameHeight: 39 });
 }
 
-//Méthode exécutée juste après preload
+//Methode executee juste apres preload
 function create() {
 
-    enemyWidth = this.textures.list.ennemi1.source[0].width;
+    setEnemiesWidths(this);
+    gameEnemies.forEach((enemy) => {
+        calculateMaxEnnemiesPerRow(enemy);
+    });
 
-    calculateMaxEnnemiesPerRow();
     starfield = this.add.tileSprite(gameWidth / 2, gameHeight / 2, gameWidth, gameHeight, "starfield");
 
     let Bullet = new Phaser.Class({
@@ -95,8 +120,10 @@ function create() {
         }
     });
 
-    enemies = this.physics.add.group();
-    generateEnemies();
+    enemiesGroup = this.physics.add.group();
+    gameEnemies.forEach((enemy) => {
+        generateEnemies(enemy);
+    });
 
     bulletsGroup = this.physics.add.group({
         classType: Bullet,
@@ -127,7 +154,7 @@ function create() {
 
     speed = Phaser.Math.GetSpeed(300, 1);
 
-    this.physics.add.overlap(enemies, bulletsGroup, (enemy, bullet) => {
+    this.physics.add.overlap(enemiesGroup, bulletsGroup, (enemy, bullet) => {
         enemy.destroy();
         bullet.destroy();
     }, null, this);
@@ -163,57 +190,76 @@ function update(time, delta) {
 }
 
 /**
- * Fonction permettant de calculer le nombre maximum d'ennemis pouvant etre places sur une seule ligne
+ * Permet de calculer le nombre maximum d'ennemis pouvant etre places sur une seule ligne ainsi que l'espace optimal
+ * et le plus proche de celui renseigne dans l'attribut spaceBetweenEnemiesWidth de l'ennemi
  * ======== DETAIL DU CALCUL ========
  * 1) Division de la largeur du canvas par la dimension d'un sprite d'ennemi pour connaitre le nombre d'ennemis
- * que l'on peut placer sans les espacer (sans la partie décimale)
+ * que l'on peut placer sans les espacer (sans la partie decimale)
  * ---> Math.trunc(gameWidth / enemyWidth)
  *
- * 2) Calcul du nombre de pixels necessaires pour afficher le nombre "division" d'ennemis si on considere une largeur de
- * canvas infinie
+ * 2) Calcul du nombre de pixels necessaires pour afficher le nombre "division" d'ennemis si on considere une largeur
+ * de canvas infinie
  * ---> Math.trunc(gameWidth / enemyWidth) * enemyWidth
  *
- * 3) Calcul du nombre d'espaces nécessaires (entre les ennemis et egalement a gauche et a droite de la ligne) toujours en
+ * 3) Calcul du nombre d'espaces necessaires (entre les ennemis et egalement a gauche et a droite de la ligne) toujours en
  * considerant un canvas de largeur infinie
  * ---> Math.trunc(gameWidth / enemyWidth) + 1
  *
  * 4) Calcul du nombre de pixels necessaires pour afficher le nombre "nbEspacesInitial" d'espaces si on considere une
  * largeur de canvas infinie
- * ---> Math.trunc(gameWidth / enemyWidth) + 1) * (espaceBetweenEnemiesWidth)
+ * ---> Math.trunc(gameWidth / enemyWidth) + 1) * (spaceBetweenEnemiesWidth)
  *
  * 5) Calcul du nombre de pixels necessaires pour afficher une ligne entiere basee sur les resultats de
  * "tailleTotaleEnnemisInitial" et "tailleTotaleEspacesInitial" en considerant une largeur infinie de canvas
- * ---> ((Math.trunc(gameWidth / enemyWidth) * enemyWidth) + (Math.trunc(gameWidth / enemyWidth) + 1)) * (espaceBetweenEnemiesWidth))
+ * ---> ((Math.trunc(gameWidth / enemyWidth) * enemyWidth) + (Math.trunc(gameWidth / enemyWidth) + 1)) * (spaceBetweenEnemiesWidth))
  *
- * 6) Tant que le nombre de pixels d'une ligne (largeur de canvas infinie) est supérieur à la largeur de canvas
+ * 6) Tant que le nombre de pixels d'une ligne (largeur de canvas infinie) est superieur a la largeur de canvas
  * definie, on soustrait la taille d'un ennemi + d'un espace a la taille d'une ligne avec largeur de canvas
  * ininfie
  *
  * 7) Le nombre final est donc la taille totale d'une ligne initialement reduite divisee par la taille en pixels d'un
  * ennemi additionnee a la taille en pixels d'un espace
  *
- * 8) On recalcule également l'espace entre chaque ennemi
+ * 8) On recalcule egalement l'espace entre chaque ennemi
  * ==================================
+ * @param enemy L'ennemi a partir duquel on veut effectuer les calculs
  */
-function calculateMaxEnnemiesPerRow() {
-    let tailleTotaleLigne = ((Math.trunc(gameWidth / enemyWidth) * enemyWidth) + (Math.trunc(gameWidth / enemyWidth) + 1)) * (espaceBetweenEnemiesWidth);
+function calculateMaxEnnemiesPerRow(enemy) {
+    let tailleTotaleLigne = ((Math.trunc(gameWidth / enemy.enemyWidth) * enemy.enemyWidth) + (Math.trunc(gameWidth / enemy.enemyWidth) + 1)) * (enemy.spaceBetweenEnemiesWidth);
 
     while (tailleTotaleLigne >= gameWidth) {
-        tailleTotaleLigne -= (enemyWidth + espaceBetweenEnemiesWidth);
+        tailleTotaleLigne -= (enemy.enemyWidth + enemy.spaceBetweenEnemiesWidth);
     }
 
-    possiblePerRow = Math.trunc(tailleTotaleLigne / (enemyWidth + espaceBetweenEnemiesWidth));
-    espaceBetweenEnemiesWidth = (gameWidth - (enemyWidth * possiblePerRow)) / (possiblePerRow + 1);
+    enemy.possiblePerRow = Math.trunc(tailleTotaleLigne / (enemy.enemyWidth + enemy.spaceBetweenEnemiesWidth));
+    enemy.spaceBetweenEnemiesWidth = (gameWidth - (enemy.enemyWidth * enemy.possiblePerRow)) / (enemy.possiblePerRow + 1);
 }
 
-function generateEnemies() {
-    let espacementHorizontal = (enemyWidth / 2) + espaceBetweenEnemiesWidth;
-    for (let i = 0; i < nbRow; i++) {
-        for (let j = 0; j < possiblePerRow; j++) {
-            enemies.create(espacementHorizontal, marginTopEnemies, "ennemi1");
-            espacementHorizontal += enemyWidth + espaceBetweenEnemiesWidth;
-        }
-        espacementHorizontal = (enemyWidth / 2) + espaceBetweenEnemiesWidth;
-        marginTopEnemies += 80;
+/**
+ * Permet de generer une ligne d'ennemi en prenant en compte ses parametres (enemyWidth, spaceBetweenEnemiesWidth, ..)
+ * @param enemy L'ennemi sur lequel on veut baser la generation de la ligne
+ */
+function generateEnemies(enemy) {
+    let espacementHorizontal = (enemy.enemyWidth / 2) + enemy.spaceBetweenEnemiesWidth;
+    for (let i = 0; i < enemy.possiblePerRow; i++) {
+        enemiesGroup.create(espacementHorizontal, marginTopEnemies, enemy.spriteName);
+        espacementHorizontal += enemy.enemyWidth + enemy.spaceBetweenEnemiesWidth;
     }
+    marginTopEnemies += verticalSpacing;
+}
+
+/**
+ * Permet de recuperer la bonne dimension du sprite parmi les textures du jeu pour chaque ennemi de l'array gameEnemies
+ * @param ctx Le contexte du jeu
+ */
+function setEnemiesWidths(ctx) {
+    gameEnemies.forEach((enemy) => {
+        for (let key in ctx.textures.list) {
+            if (ctx.textures.list.hasOwnProperty(key)) {
+                if (key === enemy.spriteName) {
+                    enemy.enemyWidth = ctx.textures.list[key].source[0].width;
+                }
+            }
+        }
+    });
 }
