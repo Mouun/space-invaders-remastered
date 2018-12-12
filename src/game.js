@@ -40,7 +40,7 @@ let enemies;
 
 //Method where I can load my assets
 function preload() {
-    this.load.image('starfield', './assets/game_background.png', { frameWidth: gameWidth, frameHeight: gameHeight });
+    this.load.image('starfield', './assets/game_background2.png', { frameWidth: gameWidth, frameHeight: gameHeight });
     this.load.image('upgradeLvl1', './assets/player_level1.png', { frameWidth: 28, frameHeight: 54 });
     this.load.image('upgradeLvl1Left', './assets/player_level1_left.png', { frameWidth: 28, frameHeight: 54 });
     this.load.image('upgradeLvl1Right', './assets/player_level1_right.png', { frameWidth: 28, frameHeight: 54 });
