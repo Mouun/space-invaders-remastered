@@ -197,6 +197,7 @@ function create() {
         maxSize: 10,
         runChildUpdate: true
     });
+    bulletsGroup.defaults.setAllowGravity = false;
 
     //Mlise en place du vaisseau et de l'annimation
     // playerSpaceship = this.add.sprite(gameWidth / 2, gameHeight - playerSpaceshipInfos.spaceBottom, playerSpaceshipInfos.spriteIdle);
