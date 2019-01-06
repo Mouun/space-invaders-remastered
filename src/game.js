@@ -41,34 +41,40 @@ let moveSpeed = initialMoveSpeed; // vitesse du vaisseau du joueur generale, ini
 let moveSpeedDash = initialMoveSpeed + 5; // vitesse du vaisseau du joueur lors d'un dash (acceleration)
 let shootRate = 500; // temps entre deux tirs du vaisseau
 let starfield;
-let scrollSpeed = 3; // vitesse de defilement du fond
-let marginTopEnemies = 50; // espacement vertical entre le haut de la fenetre de jeu et la premiere ligne d'ennemis
+let scrollSpeed = 0.5; // vitesse de defilement du fond
+let marginTopEnemies = 110; // espacement vertical entre le haut de la fenetre de jeu et la premiere ligne d'ennemis
 let bonusesGroup; // le groupe physique (collisions) contenant tous les bonus actuellement affiches dans le jeu
 let enemiesGroup; // le groupe physique (collisions) contenant tous les ennemis des lignes quel que soit leur type
 let gameEnemies = [ // tableau representatif des differents ennemis du jeu et des parametres qui leurs sont associes
     {
-        spriteName: "ennemi1", // le nom du sprite de l'ennemi
+        spriteName: "ennemi4", // le nom du sprite de l'ennemi
         enemyWidth: 0, // sa largeur en pixel, initialement a 0, recalculee par la suite
-        spaceBetweenEnemiesWidth: 30, // espacement initial souhaite entre les ennemis de la ligne, recalcule ensuite
-        possiblePerRow: 0 // le nombre maximal d'ennemi de ce type possible sur une seule ligne
+        spaceBetweenEnemiesWidth: 50, // espacement initial souhaite entre les ennemis de la ligne, recalcule ensuite
+        possiblePerRow: 0, // le nombre maximal d'ennemi de ce type possible sur une seule ligne
+        life: 3 // le nombre de points de vie de l'ennemi
     },
     {
         spriteName: "ennemi2",
         enemyWidth: 0,
         spaceBetweenEnemiesWidth: 40,
-        possiblePerRow: 0
+        possiblePerRow: 0,
+        life: 2
     },
     {
         spriteName: "ennemi3",
         enemyWidth: 0,
         spaceBetweenEnemiesWidth: 45,
-        possiblePerRow: 0
+        possiblePerRow: 0,
+        life: 1
     },
     {
-        spriteName: "ennemi4",
+        spriteName: "ennemi1",
         enemyWidth: 0,
-        spaceBetweenEnemiesWidth: 50,
-        possiblePerRow: 0
+        spaceBetweenEnemiesWidth: 30,
+        possiblePerRow: 0,
+        life: 1
+    }
+];
 let possibleBonuses = [
     {
         sprite: "bonus1",
@@ -102,7 +108,7 @@ let possibleUpgradeBonuses = [
     }
 
 ];
-let verticalSpacing = 70; // Espacement vertical entre chaque ligne d'ennemi
+let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
 let timerEvent;
 let timeBetweenBonuses = 100000; // temps entre deux arrivees de bonus (en millisecondes)
 
@@ -324,7 +330,9 @@ function calculateMaxEnnemiesPerRow(enemy) {
 function generateEnemies(enemy) {
     let espacementHorizontal = (enemy.enemyWidth / 2) + enemy.spaceBetweenEnemiesWidth;
     for (let i = 0; i < enemy.possiblePerRow; i++) {
-        enemiesGroup.create(espacementHorizontal, marginTopEnemies, enemy.spriteName);
+        let created = enemiesGroup.create(espacementHorizontal, marginTopEnemies, enemy.spriteName);
+        created.setData("life", enemy.life);
+        created.body.allowGravity = false;
         espacementHorizontal += enemy.enemyWidth + enemy.spaceBetweenEnemiesWidth;
     }
     marginTopEnemies += verticalSpacing;
