@@ -111,6 +111,7 @@ let possibleUpgradeBonuses = [
 let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
 let timerEvent;
 let timeBetweenBonuses = 100000; // temps entre deux arrivees de bonus (en millisecondes)
+let scoreText;
 
 //Method where I can load my assets
 function preload() {
@@ -158,13 +159,13 @@ function create() {
 
     starfield = this.add.tileSprite(gameWidth / 2, gameHeight / 2, gameWidth, gameHeight, "starfield");
 
+    scoreText = this.add.text(20, 20, "Score : " + playerScore, { fontFamily: 'Segoe UI', fontSize: 48, color: '#ffffff' });
     let Bullet = new Phaser.Class({
 
         Extends: Phaser.GameObjects.Image,
 
         initialize: function Bullet(scene) {
             bulletObject = Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-
             this.speed = Phaser.Math.GetSpeed(400, 1);
         },
 
@@ -225,6 +226,7 @@ function create() {
         if (enemy.getData("life") === 0) {
             enemy.destroy();
             playerScore++;
+            scoreText.setText("Score : " + playerScore);
             possibleUpgradeBonuses.forEach((bonus) => {
                 if (playerScore === bonus.nbPointsRequired) {
                     drawUpgradeBonus();
