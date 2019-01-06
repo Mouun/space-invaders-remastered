@@ -32,6 +32,7 @@ let shootRate = 200;
 let starfield;
 let scrollSpeed = 3; // vitesse de defilement du fond
 let marginTopEnemies = 50; // espacement vertical entre le haut de la fenetre de jeu et la premiere ligne d'ennemis
+let bonusesGroup; // le groupe physique (collisions) contenant tous les bonus actuellement affiches dans le jeu
 let enemiesGroup; // le groupe physique (collisions) contenant tous les ennemis des lignes quel que soit leur type
 let gameEnemies = [ // tableau representatif des differents ennemis du jeu et des parametres qui leurs sont associes
     {
@@ -57,9 +58,42 @@ let gameEnemies = [ // tableau representatif des differents ennemis du jeu et de
         enemyWidth: 0,
         spaceBetweenEnemiesWidth: 50,
         possiblePerRow: 0
+let possibleBonuses = [
+    {
+        sprite: "bonus1",
+        nbPoints: 10
+    },
+    {
+        sprite: "bonus2",
+        nbPoints: 10
+    },
+    {
+        sprite: "bonus3",
+        nbPoints: 10
+    },
+    {
+        sprite: "bonus4",
+        nbPoints: 10
     }
 ];
+let possibleUpgradeBonuses = [
+    {
+        sprite: "upgradeLvl2New",
+        nbPointsRequired: 30
+    },
+    {
+        sprite: "upgradeLvl3New",
+        nbPointsRequired: 60,
+    },
+    {
+        sprite: "upgradeLvl4",
+        nbPointsRequired: 100,
+    }
+
+];
 let verticalSpacing = 70; // Espacement vertical entre chaque ligne d'ennemi
+let timerEvent;
+let timeBetweenBonuses = 100000; // temps entre deux arrivees de bonus (en millisecondes)
 
 //Method where I can load my assets
 function preload() {
@@ -81,11 +115,15 @@ function preload() {
     this.load.image('ennemi2', './assets/ennemi_2@0.75x.png', { frameWidth: 70, frameHeight: 48 });
     this.load.image('ennemi3', './assets/ennemi_3@0.75x.png', { frameWidth: 51, frameHeight: 49 });
     this.load.image('ennemi4', './assets/ennemi_4@0.75x.png', { frameWidth: 93, frameHeight: 39 });
+    this.load.image('bonus1', './assets/star_laser_blue.png');
+    this.load.image('bonus2', './assets/star_laser_green.png');
+    this.load.image('bonus3', './assets/star_laser_pink.png');
+    this.load.image('bonus4', './assets/star_laser_yellow.png');
 }
 
 //Methode executee juste apres preload
 function create() {
-
+    timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
     setEnemiesWidths(this);
     gameEnemies.forEach((enemy) => {
         calculateMaxEnnemiesPerRow(enemy);
@@ -120,6 +158,7 @@ function create() {
         }
     });
 
+    bonusesGroup = this.physics.add.group();
     enemiesGroup = this.physics.add.group();
     gameEnemies.forEach((enemy) => {
         generateEnemies(enemy);
@@ -156,12 +195,21 @@ function create() {
 
     this.physics.add.overlap(enemiesGroup, bulletsGroup, (enemy, bullet) => {
         enemy.destroy();
+            possibleUpgradeBonuses.forEach((bonus) => {
+                if (playerScore === bonus.nbPointsRequired) {
+                    drawUpgradeBonus();
+                }
+            });
+        }
         bullet.destroy();
+    }, null, this);
+
+    this.physics.add.overlap(playerSpaceship, bonusesGroup, (playerSpaceship, bonus) => {
+        bonus.destroy();
     }, null, this);
 }
 
 function update(time, delta) {
-
     starfield.tilePositionY -= scrollSpeed;
     if (cursors.left.isDown) {
         if (playerSpaceship.x < 0) {
@@ -187,6 +235,7 @@ function update(time, delta) {
             lastFired = time + shootRate;
         }
     }
+    drawNewBonus(timerEvent);
 }
 
 /**
@@ -262,4 +311,28 @@ function setEnemiesWidths(ctx) {
             }
         }
     });
+}
+/**
+ * Permet de generer une coordonnee X pour les bonus
+ */
+function getRandomX() {
+    let min = 50;
+    let max = gameWidth - 50;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function drawUpgradeBonus() {
+    console.log("draw upgrade bonus");
+    let rand = getRandomX();
+    console.log(rand);
+    bonusesGroup.create(rand, -50, possibleBonuses[Math.floor(Math.random() * possibleBonuses.length)].sprite);
+}
+
+function drawNewBonus() {
+    if (timerEvent.getProgress() === 1) {
+        console.log("Bonus");
+        let rand = getRandomX();
+        console.log(rand);
+        bonusesGroup.create(rand, -50, possibleBonuses[Math.floor(Math.random() * possibleBonuses.length)].sprite);
+    }
 }
