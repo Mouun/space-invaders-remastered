@@ -22,13 +22,24 @@ let game = new Phaser.Game(config);
 let gameWidth = game.config.width;
 let gameHeight = game.config.height;
 let cursor;
-let playerSpaceship;
+let playerSpaceship; // Objet Phaser representatif du vaisseau
+let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vaisseau du joueur
+    spriteIdle: "upgradeLvl1New", // le sprite utilise en position normale
+    spriteLeft: "upgradeLvl1LeftNew", // le sprite utilise en position mouvement gauche
+    spriteRight: "upgradeLvl1RightNew", // // le sprite utilise en position mouvement droit
+    height: 0, // la taille du sprite en cours, initialement a 0, recalculee par la suite
+    spaceBottom: 75, // espace entre le vaisseau et le bas de l'ecran
+    lifePoints: 3 // le nombre de points de vie du vaisseau (lvl1 => 3,  lvl2 => 4, lvl3 => 5, lvl4 => 6)
+};
+let playerScore = 0; // le score du joueur
 let bulletsGroup;
 let speed;
 let lastFired = 0;
 let bulletObject;
-let moveSpeed = 5;
-let shootRate = 200;
+let initialMoveSpeed = 2.5 + (gameWidth * 0.003); // vitesse de reference utilisee notamment pour reinitialiser la vitesse apres un dash
+let moveSpeed = initialMoveSpeed; // vitesse du vaisseau du joueur generale, initialement a la vitesse de reference
+let moveSpeedDash = initialMoveSpeed + 5; // vitesse du vaisseau du joueur lors d'un dash (acceleration)
+let shootRate = 500; // temps entre deux tirs du vaisseau
 let starfield;
 let scrollSpeed = 3; // vitesse de defilement du fond
 let marginTopEnemies = 50; // espacement vertical entre le haut de la fenetre de jeu et la premiere ligne d'ennemis
@@ -97,24 +108,33 @@ let timeBetweenBonuses = 100000; // temps entre deux arrivees de bonus (en milli
 
 //Method where I can load my assets
 function preload() {
-    this.load.image('starfield', './assets/game_background2.png', { frameWidth: gameWidth, frameHeight: gameHeight });
-    this.load.image('upgradeLvl1', './assets/player_level1.png', { frameWidth: 28, frameHeight: 54 });
-    this.load.image('upgradeLvl1Left', './assets/player_level1_left.png', { frameWidth: 28, frameHeight: 54 });
-    this.load.image('upgradeLvl1Right', './assets/player_level1_right.png', { frameWidth: 28, frameHeight: 54 });
-    this.load.image('upgradeLvl2', './assets/player_level2.png', { frameWidth: 59, frameHeight: 67 });
-    this.load.image('upgradeLvl2Left', './assets/player_level2_left.png', { frameWidth: 59, frameHeight: 67 });
-    this.load.image('upgradeLvl2Right', './assets/player_level2_right.png', { frameWidth: 59, frameHeight: 67 });
-    this.load.image('upgradeLvl3', './assets/player_level3.png', { frameWidth: 65, frameHeight: 79 });
-    this.load.image('upgradeLvl3Left', './assets/player_level3_left.png', { frameWidth: 65, frameHeight: 79 });
-    this.load.image('upgradeLvl3Right', './assets/player_level3_right.png', { frameWidth: 65, frameHeight: 79 });
-    this.load.image('upgradeLvl4', './assets/player_level4.png', { frameWidth: 69, frameHeight: 110 });
-    this.load.image('upgradeLvl4Left', './assets/player_level4_left.png', { frameWidth: 69, frameHeight: 110 });
-    this.load.image('upgradeLvl4Right', './assets/player_level4_right.png', { frameWidth: 69, frameHeight: 110 });
+    this.load.image('starfield', './assets/game_background2.png');
+    this.load.image('upgradeLvl1', './assets/player_level1.png');
+    this.load.image('upgradeLvl1Left', './assets/player_level1_left.png');
+    this.load.image('upgradeLvl1Right', './assets/player_level1_right.png');
+    this.load.image('upgradeLvl1New', './assets/player_level1_new.png');
+    this.load.image('upgradeLvl1LeftNew', './assets/player_level1_left_new.png');
+    this.load.image('upgradeLvl1RightNew', './assets/player_level1_right_new.png');
+    this.load.image('upgradeLvl2New', './assets/player_level2_new.png');
+    this.load.image('upgradeLvl2LeftNew', './assets/player_level2_left_new.png');
+    this.load.image('upgradeLvl2RightNew', './assets/player_level2_right_new.png');
+    this.load.image('upgradeLvl3New', './assets/player_level3_new.png');
+    this.load.image('upgradeLvl3LeftNew', './assets/player_level3_left_new.png');
+    this.load.image('upgradeLvl3RightNew', './assets/player_level3_right_new.png');
+    this.load.image('upgradeLvl2', './assets/player_level2.png');
+    this.load.image('upgradeLvl2Left', './assets/player_level2_left.png');
+    this.load.image('upgradeLvl2Right', './assets/player_level2_right.png');
+    this.load.image('upgradeLvl3', './assets/player_level3.png');
+    this.load.image('upgradeLvl3Left', './assets/player_level3_left.png');
+    this.load.image('upgradeLvl3Right', './assets/player_level3_right.png');
+    this.load.image('upgradeLvl4', './assets/player_level4.png');
+    this.load.image('upgradeLvl4Left', './assets/player_level4_left.png');
+    this.load.image('upgradeLvl4Right', './assets/player_level4_right.png');
     this.load.image('bullet', './assets/round_laser_blue.png');
-    this.load.image('ennemi1', './assets/ennemi_1@0.75x.png', { frameWidth: 64, frameHeight: 48 });
-    this.load.image('ennemi2', './assets/ennemi_2@0.75x.png', { frameWidth: 70, frameHeight: 48 });
-    this.load.image('ennemi3', './assets/ennemi_3@0.75x.png', { frameWidth: 51, frameHeight: 49 });
-    this.load.image('ennemi4', './assets/ennemi_4@0.75x.png', { frameWidth: 93, frameHeight: 39 });
+    this.load.image('ennemi1', './assets/ennemi_1@0.75x.png');
+    this.load.image('ennemi2', './assets/ennemi_2@0.75x.png');
+    this.load.image('ennemi3', './assets/ennemi_3@0.75x.png');
+    this.load.image('ennemi4', './assets/ennemi_4@0.75x.png');
     this.load.image('bonus1', './assets/star_laser_blue.png');
     this.load.image('bonus2', './assets/star_laser_green.png');
     this.load.image('bonus3', './assets/star_laser_pink.png');
@@ -125,6 +145,7 @@ function preload() {
 function create() {
     timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
     setEnemiesWidths(this);
+    setPlayerSpaceshipCurrentHeight(this);
     gameEnemies.forEach((enemy) => {
         calculateMaxEnnemiesPerRow(enemy);
     });
@@ -171,30 +192,33 @@ function create() {
     });
 
     //Mlise en place du vaisseau et de l'annimation
-    playerSpaceship = this.add.sprite(gameWidth / 2, gameHeight - 45, 'upgradeLvl1');
-
+    // playerSpaceship = this.add.sprite(gameWidth / 2, gameHeight - playerSpaceshipInfos.spaceBottom, playerSpaceshipInfos.spriteIdle);
     this.anims.create({
         key: 'left',
-        frames: [{ key: "upgradeLvl1Left", frame: 1 }],
+        frames: [{ key: playerSpaceshipInfos.spriteIdle, frame: 1 }],
         frameRate: 60
     });
     this.anims.create({
         key: 'turn',
-        frames: [{ key: 'upgradeLvl1', frame: 1 }],
+        frames: [{ key: playerSpaceshipInfos.spriteIdle, frame: 1 }],
         frameRate: 60
     });
     this.anims.create({
         key: 'right',
-        frames: [{ key: "upgradeLvl1Right", frame: 1 }],
+        frames: [{ key: playerSpaceshipInfos.spriteIdle, frame: 1 }],
         frameRate: 60
     });
 
+    playerSpaceship = this.physics.add.group().create(gameWidth / 2, gameHeight - playerSpaceshipInfos.spaceBottom, playerSpaceshipInfos.spriteIdle);
+    playerSpaceship.body.allowGravity = false;
+
     cursors = this.input.keyboard.createCursorKeys();
 
-    speed = Phaser.Math.GetSpeed(300, 1);
-
     this.physics.add.overlap(enemiesGroup, bulletsGroup, (enemy, bullet) => {
-        enemy.destroy();
+        enemy.setData("life", enemy.getData("life") - 1);
+        if (enemy.getData("life") === 0) {
+            enemy.destroy();
+            playerScore++;
             possibleUpgradeBonuses.forEach((bonus) => {
                 if (playerScore === bonus.nbPointsRequired) {
                     drawUpgradeBonus();
@@ -235,6 +259,15 @@ function update(time, delta) {
             lastFired = time + shootRate;
         }
     }
+
+    if (cursors.shift._justDown) {
+        moveSpeed = moveSpeedDash;
+    }
+
+    if (cursors.shift.isUp) {
+        moveSpeed = initialMoveSpeed;
+    }
+
     drawNewBonus(timerEvent);
 }
 
@@ -312,6 +345,21 @@ function setEnemiesWidths(ctx) {
         }
     });
 }
+
+/**
+ * Permet de recuperer la bonne hauteur du sprite parmi les textures du jeu pour le vaisseau du joueur
+ * @param ctx Le contexte du jeu
+ */
+function setPlayerSpaceshipCurrentHeight(ctx) {
+    for (let key in ctx.textures.list) {
+        if (ctx.textures.list.hasOwnProperty(key)) {
+            if (key === playerSpaceshipInfos.spriteIdle) {
+                playerSpaceshipInfos.height = ctx.textures.list[key].source[0].height;
+            }
+        }
+    }
+}
+
 /**
  * Permet de generer une coordonnee X pour les bonus
  */
