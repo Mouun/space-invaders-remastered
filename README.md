@@ -1,23 +1,19 @@
-# space-invaders-remastered
+﻿# Projet : space-invaders-remastered
 
-Nous sommes trois dans le groupe:
-
-- Nadaud Sörel
-- Marion Poesy
-- Filipe Doutel Silva
+Groupe de 3 étudiants en parcours MIAGE (Méthodes Informatiques Appliquées à la Gestion des Entreprises)
+- Sörel NADAUD
+- Marion POESY
+- Filipe DOUTEL SILVA
 
 Space Invaders Remastered est une version revisitée du jeu original Space Invaders.
-Celle-ci aura pour but d'améliorer le jeu duquel il s'inspire, en ajoutant par exemple:
+Ntre version sera une amélioration du jeu original, dont nous nous inspirons, en ajoutant par exemple :
 
 - Des graphismes améliorés (forme des ennemis à tuer)
 - Des modes de jeu en plus
 - De nouveaux types d'ennemis
 
-**Nous avons choisi de commencer le développement d'une deuxième version de notre jeu**
-**Une version en JS pure, pour l'instant nous n'avons pas abandonné la version avec phaser**
+**Nous avons choisi de développer notre jeu avec la librairie Phaser** ([phaser.io](http://phaser.io/))
 **Le développement des deux versions va se poursuivre, si d'autres complications surviennent pendant le développement de la version avec phaser, nous l'abandonnerons au profit de la version en JS Pure**
-
-Nous comptons utiliser du JS pur ou des librairies si besoin (exemple: [phaser.io](http://phaser.io/) / [melon.JS](http://melonjs.org/))
 
 Nous avons déjà un [site](http://www.classicgaming.cc/classics/space-invaders/sounds) qui nous permet de récupérer des images et des sons fidèles au jeu classique.
 
