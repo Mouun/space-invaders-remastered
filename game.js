@@ -203,7 +203,7 @@ function create() {
     // playerSpaceship = this.add.sprite(gameWidth / 2, gameHeight - playerSpaceshipInfos.spaceBottom, playerSpaceshipInfos.spriteIdle);
     this.anims.create({
         key: 'left',
-        frames: [{ key: playerSpaceshipInfos.spriteIdle, frame: 1 }],
+        frames: [{ key: playerSpaceshipInfos.spriteLeft, frame: 1 }],
         frameRate: 60
     });
     this.anims.create({
@@ -213,7 +213,7 @@ function create() {
     });
     this.anims.create({
         key: 'right',
-        frames: [{ key: playerSpaceshipInfos.spriteIdle, frame: 1 }],
+        frames: [{ key: playerSpaceshipInfos.spriteRight, frame: 1 }],
         frameRate: 60
     });
 
@@ -260,7 +260,7 @@ function update(time, delta) {
         playerSpaceship.anims.play('turn');
     }
 
-    if (cursors.up.isDown && time > lastFired) {
+    if (cursors.space.isDown && time > lastFired) {
         let bullet = bulletsGroup.get();
 
         if (bullet) {
