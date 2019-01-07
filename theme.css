@@ -1,0 +1,14 @@
+body 
+{
+
+color:black;
+background-color:white;
+background-image:url(assets/game_background2.png);
+
+}
+
+a, a:hover, a:visited, a:active
+{
+	color:white;
+	text-decoration:none;
+}
