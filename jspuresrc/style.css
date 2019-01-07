@@ -1,9 +1,0 @@
-#myCanvas {
-    position: fixed; /* absolute */
-    padding: 10px;
-    padding-right: 5px;
-    width: 90%;    /* 100% */
-    height: 90%;   /* 100% */
-    border-style: solid;
-    border-color: black;
-}
