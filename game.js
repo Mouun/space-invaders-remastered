@@ -51,28 +51,32 @@ let gameEnemies = [ // tableau representatif des differents ennemis du jeu et de
         enemyWidth: 0, // sa largeur en pixel, initialement a 0, recalculee par la suite
         spaceBetweenEnemiesWidth: 50, // espacement initial souhaite entre les ennemis de la ligne, recalcule ensuite
         possiblePerRow: 0, // le nombre maximal d'ennemi de ce type possible sur une seule ligne
-        life: 3 // le nombre de points de vie de l'ennemi
+        life: 3, // le nombre de points de vie de l'ennemi
+        nbPoints: 3 // le nombre de points obtenus par le joueur lors de l'elimination de cet ennemi
     },
     {
         spriteName: "ennemi2",
         enemyWidth: 0,
         spaceBetweenEnemiesWidth: 40,
         possiblePerRow: 0,
-        life: 2
+        life: 2,
+        nbPoints: 2
     },
     {
         spriteName: "ennemi3",
         enemyWidth: 0,
         spaceBetweenEnemiesWidth: 45,
         possiblePerRow: 0,
-        life: 1
+        life: 1,
+        nbPoints: 1
     },
     {
         spriteName: "ennemi1",
         enemyWidth: 0,
         spaceBetweenEnemiesWidth: 30,
         possiblePerRow: 0,
-        life: 1
+        life: 1,
+        nbPoints: 1
     }
 ];
 let possibleBonuses = [
@@ -203,7 +207,7 @@ function create() {
     // playerSpaceship = this.add.sprite(gameWidth / 2, gameHeight - playerSpaceshipInfos.spaceBottom, playerSpaceshipInfos.spriteIdle);
     this.anims.create({
         key: 'left',
-        frames: [{ key: playerSpaceshipInfos.spriteIdle, frame: 1 }],
+        frames: [{ key: playerSpaceshipInfos.spriteLeft, frame: 1 }],
         frameRate: 60
     });
     this.anims.create({
@@ -213,7 +217,7 @@ function create() {
     });
     this.anims.create({
         key: 'right',
-        frames: [{ key: playerSpaceshipInfos.spriteIdle, frame: 1 }],
+        frames: [{ key: playerSpaceshipInfos.spriteRight, frame: 1 }],
         frameRate: 60
     });
 
@@ -225,14 +229,14 @@ function create() {
     this.physics.add.overlap(enemiesGroup, bulletsGroup, (enemy, bullet) => {
         enemy.setData("life", enemy.getData("life") - 1);
         if (enemy.getData("life") === 0) {
-            enemy.destroy();
-            playerScore++;
+            playerScore += enemy.data.values.nbPoints;
             scoreText.setText("Score : " + playerScore);
             possibleUpgradeBonuses.forEach((bonus) => {
                 if (playerScore === bonus.nbPointsRequired) {
                     drawUpgradeBonus();
                 }
             });
+            enemy.destroy();
         }
         bullet.destroy();
     }, null, this);
@@ -260,7 +264,7 @@ function update(time, delta) {
         playerSpaceship.anims.play('turn');
     }
 
-    if (cursors.up.isDown && time > lastFired) {
+    if (cursors.space.isDown && time > lastFired) {
         let bullet = bulletsGroup.get();
 
         if (bullet) {
@@ -335,6 +339,7 @@ function generateEnemies(enemy) {
     for (let i = 0; i < enemy.possiblePerRow; i++) {
         let created = enemiesGroup.create(espacementHorizontal, marginTopEnemies, enemy.spriteName);
         created.setData("life", enemy.life);
+        created.setData("nbPoints", enemy.nbPoints);
         created.body.allowGravity = false;
         espacementHorizontal += enemy.enemyWidth + enemy.spaceBetweenEnemiesWidth;
     }
