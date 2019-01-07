@@ -32,4 +32,6 @@ Concernant les "upgrades" que nous voulont mettre en place sont les suivantes:
 - Une "upgrade" pour augmenter le nombre de vies du vaisseau
 - Une "upgrade" pour tuer le joueur (une sorte de malus)
 
+Le jeu est hébergé [ici](https://mouun.github.io/space-invaders-remastered/) 
+
 Présentation du projet en classe le Vendredi 11 Janvier 2019 à l'aide d'un Prezi ([prezi.com](https://prezi.com/p/pm8udgrcgxvr/))
