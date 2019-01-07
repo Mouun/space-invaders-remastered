@@ -16,12 +16,13 @@ body
     	url(font/space_invaders.svg) format('svg');
 }
 
-a, a:hover, a:visited, a:active
+a, a:hover, a:visited, a:active, a:link
 {
 	color:white;
 	text-decoration:none;
 	text-align: center;
 	font-family: PoliceJeu;
+	text-decoration:none;
 } 
 
 img
