@@ -1,14 +1,21 @@
 body 
 {
-
-color:black;
-background-color:white;
-background-image:url(assets/game_background2.png);
-
+	color:black;
+	background-color:white;
+	background-image:url(assets/game_background2.png);
 }
 
 a, a:hover, a:visited, a:active
 {
 	color:white;
 	text-decoration:none;
+	text-align: center;
+}
+
+img
+{
+	display:block;
+	width:auto;
+	margin-left:auto;
+	margin-right:auto;
 }
