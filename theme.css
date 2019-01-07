@@ -5,11 +5,23 @@ body
 	background-image:url(assets/game_background2.png);
 }
 
+@font-face 
+{
+
+    font-family: 'PoliceJeu';
+    src: 
+    	url(font/space_invaders.eot) format('eot'),
+    	url(font/space_invaders.woff) format('woff'),
+    	url(font/space_invaders.ttf) format('truetype'),
+    	url(font/space_invaders.svg) format('svg');
+}
+
 a, a:hover, a:visited, a:active
 {
 	color:white;
 	text-decoration:none;
 	text-align: center;
+	font-family: PoliceJeu;
 }
 
 img
