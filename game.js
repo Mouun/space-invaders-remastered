@@ -1,4 +1,32 @@
 //Creation des params de la partie
+
+let sprites = new Howl({
+    src: ['assets/spritesound.mp3'],
+    sprite: {
+        playerDeath: [0, 1840],
+        ennemyDeath: [1938, 443],
+        gunUpgrade: [2846, 789],
+        shieldUpgrade: [3709, 882],
+        laser: [4689, 5759],
+        missile: [10516, 729],
+        shot: [11327, 221],
+        fastShot: [11625, 259],
+        ennemyShot: [11978, 150],
+    }
+});
+
+let music = new Howl({
+    src: ['assets/soundtrack.mp3'],
+    autoplay: true,
+    loop: true,
+    volume: 0.2,
+    onend: function() {
+        console.log('Finished!');
+        // On  peu refaire play d'ici
+        // Puis on fait un stop quand on veut
+    }
+});
+
 let config = {
     type: Phaser.AUTO,
     width: window.innerWidth,
@@ -237,6 +265,7 @@ function create() {
                 }
             });
             enemy.destroy();
+            sprites.play("ennemyDeath");
         }
         bullet.destroy();
     }, null, this);
@@ -269,6 +298,7 @@ function update(time, delta) {
 
         if (bullet) {
             bullet.fire(playerSpaceship.x, playerSpaceship.y);
+            sprites.play("shot");
             lastFired = time + shootRate;
         }
     }
