@@ -475,6 +475,9 @@ function update(time, delta) {
         moveSpeed = initialMoveSpeed;
     }
 
+
+    updateSpaceship(this);
+
     drawNewBonus(timerEvent);
 }
 
@@ -555,6 +558,18 @@ function setEnemiesWidths(ctx) {
         }
     });
 }
+
+function updateSpaceship(ctx) {
+    playerSpaceship.setTexture(playerSpaceshipInfos.sprites.idle);
+    for (let key in ctx.textures.list) {
+        if (ctx.textures.list.hasOwnProperty(key)) {
+            if (key === playerSpaceshipInfos.sprites.idle) {
+                playerSpaceship.setSize(ctx.textures.list[key].source[0].width, ctx.textures.list[key].source[0].height);
+            }
+        }
+    }
+}
+
 
 /**
  * Permet de generer une coordonnee X pour les bonus
