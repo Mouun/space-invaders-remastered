@@ -445,6 +445,11 @@ function create() {
         bullet.destroy();
     }, null, this);
 
+    this.physics.add.overlap(playerSpaceship, ennemisBulletsGroup, (playerSpaceship, bullet) => {
+        console.log("touché tes nul");
+        bullet.destroy();
+    }, null, this);
+
     this.physics.add.overlap(playerSpaceship, bonusesGroup, (playerSpaceship, bonus) => {
         bonus.destroy();
     }, null, this);
