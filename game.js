@@ -46,7 +46,8 @@ let config = {
 
 let game = new Phaser.Game(config);
 
-let timeBetweenBonuses = 30000;
+let nbWavesCleared = 1;
+let timeBetweenBonuses = 1000;
 let timeBetweenMovement = 1500; // Temps entre chaque mouvement des ennemis
 let timeBetweenEnnemyShot = 5000;
 let gameWidth = game.config.width;
@@ -61,7 +62,6 @@ let initialMoveSpeed = 2.5 + (gameWidth * 0.003); // vitesse de reference utilis
 let moveSpeed = initialMoveSpeed; // vitesse du vaisseau du joueur generale, initialement a la vitesse de reference
 let moveSpeedDash = initialMoveSpeed + 5; // vitesse du vaisseau du joueur lors d'un dash (acceleration)
 let starfield;
-let oldShootRate;
 let scrollSpeed = 0.5; // vitesse de defilement du fond
 let marginTopEnemies = 110; // espacement vertical entre le haut de la fenetre de jeu et la premiere ligne d'ennemis
     let bonusesGroup; // le groupe physique (collisions) contenant tous les bonus actuellement affiches dans le jeu
@@ -187,6 +187,7 @@ let travelDownOnce = false; // Variable levier qui va servir au déplacement ver
 let lateralMovementSize = 30;
 let downMovementSize = 10;
 let lifeText;
+let wavesText;
 let cursors; // Objet Phaser representatif du clavier (pour les touches)
 let level = 0; // le niveau du vaisseau du joueur
 let playerSpaceship; // Objet Phaser representatif du vaisseau
@@ -324,6 +325,8 @@ function create() {
     playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
     playerSpaceshipInfos.shield = "none";
     playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
+    nbWavesCleared = 0;
+    timeBetweenMovement = 1500;
     playerScore = 0;
     restartButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
@@ -338,13 +341,19 @@ function create() {
 
     scoreText = this.add.text(20, 20, "Score : " + playerScore, {
         fontFamily: 'Segoe UI',
-        fontSize: 48,
+        fontSize: 36,
         color: '#ffffff'
     });
 
     lifeText = this.add.text(300, 20, "Vies : " + playerSpaceshipInfos.lifePoints, {
         fontFamily: 'Segoe UI',
-        fontSize: 48,
+        fontSize:  36,
+        color: '#ffffff'
+    });
+
+    wavesText = this.add.text(800, 20, "Manche : " + nbWavesCleared, {
+        fontFamily: 'Segoe UI',
+        fontSize: 36,
         color: '#ffffff'
     });
 
@@ -515,6 +524,23 @@ function update(time, delta) {
 
     if (restartButton._justDown) {
         this.scene.restart();
+    }
+
+    if (enemiesGroup.getChildren().length === 0) {
+        if (nbWavesCleared < 10) {
+            timerEventEnnemis.delay -= 80;
+        }
+        touchBorderRight = false;
+        touchBorderLeft = false;
+        travelDownOnce = false;
+        lateralMovementSize = 30;
+        downMovementSize = 10;
+        marginTopEnemies = 110;
+        nbWavesCleared++;
+        gameEnemies.forEach((enemy) => {
+            generateEnemies(enemy);
+        });
+        wavesText.setText("Manche : " + nbWavesCleared);
     }
 
 
