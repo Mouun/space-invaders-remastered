@@ -47,12 +47,13 @@ let config = {
 let game = new Phaser.Game(config);
 
 let nbWavesCleared = 1;
-let timeBetweenBonuses = 1000;
+let timeBetweenBonuses = 45000;
 let timeBetweenMovement = 1500; // Temps entre chaque mouvement des ennemis
 let timeBetweenEnnemyShot = 5000;
 let gameWidth = game.config.width;
 let gameHeight = game.config.height;
 let playerScore = 0; // le score du joueur
+let upgradesPoints = 0; // le compteur de points pour les ameliorations
 let bulletsGroup;
 let ennemisBulletsGroup;
 let speed;
@@ -168,12 +169,12 @@ let possibleUpgradeBonuses = [
     {
         sprite: "upgrade2",
         level: 2,
-        nbPointsRequired: 20,
+        nbPointsRequired: 30,
     },
     {
         sprite: "upgrade3",
         level: 3,
-        nbPointsRequired: 30,
+        nbPointsRequired: 45,
     }
 ];
 let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
@@ -316,18 +317,12 @@ function preload() {
 
 //Methode executee juste apres preload
 function create() {
+    resetPlayerSpaceship();
     marginTopEnemies = 110;
-    level = 0;
-    playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesNoShield.idle;
-    playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
-    playerSpaceshipInfos.maxLifePoints = possibleSpaceships[level].maxLifePoints;
-    playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
-    playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
-    playerSpaceshipInfos.shield = "none";
-    playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
     nbWavesCleared = 0;
     timeBetweenMovement = 1500;
     playerScore = 0;
+    upgradesPoints = 0;
     restartButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
     timerEventEnnemis = this.time.addEvent({delay: timeBetweenMovement, callback: checkBeforeMoveEnnemis, loop: true});
@@ -449,9 +444,10 @@ function create() {
         enemy.setData("life", enemy.getData("life") - 1);
         if (enemy.getData("life") === 0) {
             for (let i = 0; i < enemy.data.values.nbPoints; i++) {
+                upgradesPoints++;
                 playerScore++;
                 possibleUpgradeBonuses.forEach((upgrade) => {
-                    if (playerScore === upgrade.nbPointsRequired) {
+                    if (upgradesPoints === upgrade.nbPointsRequired) {
                         drawUpgradeBonus(upgrade.level - 1);
                     }
                 });
@@ -529,7 +525,9 @@ function update(time, delta) {
     if (enemiesGroup.getChildren().length === 0) {
         if (nbWavesCleared < 10) {
             timerEventEnnemis.delay -= 80;
+            timerEvent.delay -= 3000;
         }
+        resetPlayerSpaceship();
         touchBorderRight = false;
         touchBorderLeft = false;
         travelDownOnce = false;
@@ -752,4 +750,16 @@ function switchInfos(mode, level) {
             playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
             break;
     }
+}
+
+function resetPlayerSpaceship() {
+    level = 0;
+    upgradesPoints = 0;
+    playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesNoShield.idle;
+    playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
+    playerSpaceshipInfos.maxLifePoints = possibleSpaceships[level].maxLifePoints;
+    playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
+    playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
+    playerSpaceshipInfos.shield = "none";
+    playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
 }
