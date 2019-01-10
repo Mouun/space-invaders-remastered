@@ -555,8 +555,7 @@ function makeEnnemisFire() {
 
         if (bullet) {
             bullet.fire(current.x, current.y);
-            // sprites.play("shot");
-            // lastFired = time + playerSpaceshipInfos.shootRate;
+            sprites.play("ennemyShot");
         }
     });
 }
