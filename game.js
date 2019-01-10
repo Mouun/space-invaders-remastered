@@ -48,6 +48,7 @@ let config = {
 let game = new Phaser.Game(config);
 
 let timeBetweenBonuses = 30000;
+let timeBetweenMovement = 1500; // Temps entre chaque mouvement des ennemis
 let gameWidth = game.config.width;
 let gameHeight = game.config.height;
 let playerScore = 0; // le score du joueur
@@ -135,7 +136,13 @@ let possibleUpgradeBonuses = [
 ];
 let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
 let timerEvent;
+let timerEventEnnemis; // Le timer qui va lancer le trigger de déplacement de chaque ennemis
 let scoreText;
+let touchBorderRight = false;
+let touchBorderLeft = false;
+let travelDownOnce = false; // Variable levier qui va servir au déplacement vers le bas lors qu'un des bords à été atteind
+let lateralMovementSize = 30;
+let downMovementSize = 10;
 let cursors; // Objet Phaser representatif du clavier (pour les touches)
 let level = 0; // le niveau du vaisseau du joueur
 let playerSpaceship; // Objet Phaser representatif du vaisseau
@@ -305,6 +312,7 @@ function preload() {
 //Methode executee juste apres preload
 function create() {
     timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
+    timerEventEnnemis = this.time.addEvent({delay: timeBetweenMovement, callback: checkBeforeMoveEnnemis, loop: true});
     setEnemiesWidths(this);
     gameEnemies.forEach((enemy) => {
         calculateMaxEnnemiesPerRow(enemy);
@@ -455,27 +463,53 @@ function update(time, delta) {
     if (cursors.shift.isUp) {
         moveSpeed = initialMoveSpeed;
     }
-
-
-    updateSpaceship(this);
-
-    moveEnnemis(time, delta);
     drawNewBonus(timerEvent);
 }
 
-
 /**
  *
- * Cette fonction permet de déplacer les ennemis de façon random (dans un premier).
- *
+ * Cette fonction permet de vérifier si les invaders on atteind un des deux bords
+ * Si c'est le cas il bouge une fois vers le bas et se déplace dans le sens opposé et tout recommence.
  *
  **/
 
-function moveEnnemis(time, delta) {
+function checkBeforeMoveEnnemis() {
+    enemiesGroup.getChildren().forEach((current) => {
+        if (current.x + current.width/2 >= gameWidth) {
+            touchBorderRight = true;
+            touchBorderLeft = false;
+            travelDownOnce = !travelDownOnce;
+        } else if (current.x - current.width/2 <= 0) {
+            touchBorderLeft = true;
+            touchBorderRight = false;
+            travelDownOnce = !travelDownOnce;
+        }
+    });
 
-    if (Math.trunc(time) % 200 === 0) {
-        console.log("Houra");
+    if ((touchBorderRight || touchBorderLeft) && travelDownOnce) {
+        moveEnnemis(null, true);
+    } else if (!touchBorderRight) {
+        moveEnnemis(lateralMovementSize, false);
+
+    } else if (!touchBorderLeft) {
+        moveEnnemis(-lateralMovementSize, false);
+
     }
+}
+
+/**
+ * Simple fonction utilitaire qui permet de déplacer les invaders
+ * @param movement
+ * @param down
+ */
+function moveEnnemis(movement, down) {
+    enemiesGroup.getChildren().forEach((current) => {
+        if (down) {
+            current.y += downMovementSize;
+        } else {
+            current.x = current.x + movement;
+        }
+    });
 }
 
 /**
