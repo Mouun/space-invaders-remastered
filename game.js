@@ -7,7 +7,6 @@ let sprites = new Howl({
         ennemyDeath: [1938, 443],
         gunUpgrade: [2846, 789],
         shieldUpgrade: [3709, 882],
-        laser: [4689, 5759],
         missile: [10516, 729],
         shot: [11327, 221],
         fastShot: [11625, 259],
@@ -20,7 +19,7 @@ let music = new Howl({
     autoplay: true,
     loop: true,
     volume: 0.2,
-    onend: function() {
+    onend: function () {
         console.log('Finished!');
         // On  peu refaire play d'ici
         // Puis on fait un stop quand on veut
@@ -35,7 +34,7 @@ let config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 175 },
-            debug: false
+            debug: true
         }
     },
     scene: {
@@ -47,7 +46,7 @@ let config = {
 
 let game = new Phaser.Game(config);
 
-let timeBetweenBonuses = 30000;
+let timeBetweenBonuses = 1000;
 let gameWidth = game.config.width;
 let gameHeight = game.config.height;
 let playerScore = 0; // le score du joueur
@@ -59,9 +58,10 @@ let initialMoveSpeed = 2.5 + (gameWidth * 0.003); // vitesse de reference utilis
 let moveSpeed = initialMoveSpeed; // vitesse du vaisseau du joueur generale, initialement a la vitesse de reference
 let moveSpeedDash = initialMoveSpeed + 5; // vitesse du vaisseau du joueur lors d'un dash (acceleration)
 let starfield;
+let oldShootRate;
 let scrollSpeed = 0.5; // vitesse de defilement du fond
 let marginTopEnemies = 110; // espacement vertical entre le haut de la fenetre de jeu et la premiere ligne d'ennemis
-let bonusesGroup; // le groupe physique (collisions) contenant tous les bonus actuellement affiches dans le jeu
+    let bonusesGroup; // le groupe physique (collisions) contenant tous les bonus actuellement affiches dans le jeu
 let upgradesGroup; // le groupe physique (collisions) contenant toutes les ameliorations actuellement affichees dans le jeu
 let enemiesGroup; // le groupe physique (collisions) contenant tous les ennemis des lignes quel que soit leur type
 let gameEnemies = [ // tableau representatif des differents ennemis du jeu et des parametres qui leurs sont associes
@@ -101,38 +101,58 @@ let gameEnemies = [ // tableau representatif des differents ennemis du jeu et de
 let possibleBonuses = [
     {
         sprite: "bonus1",
-        action: () => {
+        action: () => { // acceleration de la vitesse de tir
             let oldShootRate = playerSpaceshipInfos.shootRate;
-            playerSpaceshipInfos.shootRate -= 200;
-            console.log("increase shootrate");
-            setTimeout(
-                function() {
-                    playerSpaceshipInfos.shootRate = oldShootRate;
-                }, 3000);
+            playerSpaceshipInfos.shootRate -= 400;
+            setTimeout(() => {
+                playerSpaceshipInfos.shootRate = oldShootRate;
+            }, 3000);
         }
     },
     {
         sprite: "bonus2",
-        action: () => {
-            console.log("heal player");
+        action: () => { // regain d'un point de sante
+            if (playerSpaceshipInfos.lifePoints < playerSpaceshipInfos.maxLifePoints) {
+                playerSpaceshipInfos.lifePoints++;
+            }
         }
     },
     {
         sprite: "bonus3",
-        action: () => {
-            console.log("give shield");
+        action: () => { // ajout un bouclier au joueur
+            if (playerSpaceshipInfos.shield === "none") {
+                playerSpaceshipInfos.shield = "full";
+                shieldInfos.lifePoints = 2;
+                playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldFull.idle;
+            }
         }
     },
     {
         sprite: "bonus4",
         action: () => {
-            console.log("laser shoot");
+            console.log("random shoot");
         }
     },
     {
-        sprite: "bonus5",
+        sprite: "malus",
         action: () => {
-            console.log("random shoot");
+            if (playerSpaceshipInfos.lifePoints === 1 && shieldInfos.lifePoints === 0) {
+                playerSpaceshipInfos.lifePoints--;
+                game.scene.pause("default");
+            } else {
+                if (playerSpaceshipInfos.shield === "full") {
+                    playerSpaceshipInfos.shield = "half";
+                    playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldHalf.idle;
+                    shieldInfos.lifePoints--;
+                } else if (playerSpaceshipInfos.shield === "half") {
+                    playerSpaceshipInfos.shield = "none";
+                    playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesNoShield.idle;
+                    shieldInfos.lifePoints--;
+                } else {
+                    playerSpaceshipInfos.lifePoints--;
+                }
+            }
+            console.log("malus");
         }
     }
 ];
@@ -156,6 +176,7 @@ let possibleUpgradeBonuses = [
 let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
 let timerEvent;
 let scoreText;
+let lifeText;
 let cursors; // Objet Phaser representatif du clavier (pour les touches)
 let level = 0; // le niveau du vaisseau du joueur
 let playerSpaceship; // Objet Phaser representatif du vaisseau
@@ -172,6 +193,7 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
             idle: "upgradeLvl0NoShield",
         },
         spaceBottom: 75,
+        maxLifePoints: 3,
         lifePoints: 3,
         scaleCoefficient: 1,
         shootRate: 800
@@ -188,6 +210,7 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
             idle: "upgradeLvl1NoShield",
         },
         spaceBottom: 75,
+        maxLifePoints: 4,
         lifePoints: 4,
         scaleCoefficient: 1,
         shootRate: 700
@@ -204,6 +227,7 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
             idle: "upgradeLvl2NoShield",
         },
         spaceBottom: 75,
+        maxLifePoints: 5,
         lifePoints: 5,
         scaleCoefficient: 1,
         shootRate: 600
@@ -220,21 +244,27 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
             idle: "upgradeLvl3NoShield",
         },
         spaceBottom: 75,
+        maxLifePoints: 6,
         lifePoints: 6,
         scaleCoefficient: 1,
         shootRate: 500
     }
 ];
+let shieldInfos = {
+    lifePoints: 0 // le nombre de points de vie du bouclier (si celui-ci est obtenu par le joueur)
+};
 let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vaisseau du joueur en temps reel
     sprites: {
         idle: possibleSpaceships[level].spritesNoShield.idle, // le sprite utilise en position normale sans bouclier
     },
     spaceBottom: possibleSpaceships[level].spaceBottom, // espace entre le vaisseau et le bas de l'ecran
+    maxLifePoints: possibleSpaceships[level].maxLifePoints, // le nombre maximum de points de vie du vaisseau
     lifePoints: possibleSpaceships[level].lifePoints, // le nombre de points de vie du vaisseau (lvl0 => 3,  lvl1 => 4, lvl2 => 5, lvl3 => 6)
     scaleCoefficient: possibleSpaceships[level].scaleCoefficient, // le coefficient de redimensionnement du sprite
     shield: "none", // permet de determiner si le vaisseau dispose d'un bonus bouclier ou pas (none => pas de bouclier, half => bouclier a 50% de capacite, full => bouclier a 100% de capacite
     shootRate: possibleSpaceships[level].shootRate // temps entre deux tirs du vaisseau
 };
+let restartButton;
 
 //Method where I can load my assets
 function preload() {
@@ -265,7 +295,8 @@ function preload() {
     this.load.image('bonus2', './assets/star_laser_green.png');
     this.load.image('bonus3', './assets/star_laser_pink.png');
     this.load.image('bonus4', './assets/star_laser_yellow.png');
-    this.load.image('bonus5', './assets/long_laser_blue.png');
+
+    this.load.image('malus', './assets/long_laser_green.png');
 
     this.load.image('upgrade1', './assets/laser_blue.png');
     this.load.image('upgrade2', './assets/laser_green.png');
@@ -274,6 +305,17 @@ function preload() {
 
 //Methode executee juste apres preload
 function create() {
+    marginTopEnemies = 110;
+    level = 0;
+    playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesNoShield.idle;
+    playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
+    playerSpaceshipInfos.maxLifePoints = possibleSpaceships[level].maxLifePoints;
+    playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
+    playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
+    playerSpaceshipInfos.shield = "none";
+    playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
+    playerScore = 0;
+    restartButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
     setEnemiesWidths(this);
     gameEnemies.forEach((enemy) => {
@@ -287,6 +329,13 @@ function create() {
         fontSize: 48,
         color: '#ffffff'
     });
+
+    lifeText = this.add.text(300, 20, "Vies : " + playerSpaceshipInfos.lifePoints, {
+        fontFamily: 'Segoe UI',
+        fontSize: 48,
+        color: '#ffffff'
+    });
+
     let Bullet = new Phaser.Class({
 
         Extends: Phaser.GameObjects.Image,
@@ -383,13 +432,11 @@ function update(time, delta) {
         if (playerSpaceship.x < 0) {
             playerSpaceship.x = gameWidth;
         }
-        playerSpaceship.anims.play('left', true);
         playerSpaceship.x -= moveSpeed;
     } else if (cursors.right.isDown) {
         if (playerSpaceship.x > gameWidth) {
             playerSpaceship.x = 0;
         }
-        playerSpaceship.anims.play('right', true);
         playerSpaceship.x += moveSpeed;
     } else {
         playerSpaceship.anims.play('turn');
@@ -413,6 +460,9 @@ function update(time, delta) {
         moveSpeed = initialMoveSpeed;
     }
 
+    if (restartButton._justDown) {
+        this.scene.restart();
+    }
 
     updateSpaceship(this);
 
@@ -506,6 +556,11 @@ function updateSpaceship(ctx) {
             }
         }
     }
+    if (playerSpaceshipInfos.shield === "full" || playerSpaceshipInfos.shield === "half") {
+        lifeText.setText("Vies : " + playerSpaceshipInfos.lifePoints + " + " + shieldInfos.lifePoints + "pts de bouclier");
+    } else {
+        lifeText.setText("Vies : " + playerSpaceshipInfos.lifePoints);
+    }
 }
 
 
@@ -527,7 +582,7 @@ function drawUpgradeBonus(level) {
 function drawNewBonus() {
     if (timerEvent.getProgress() === 1) {
         let rand = getRandomX();
-        let bonusDatas = possibleBonuses[0];
+        let bonusDatas = possibleBonuses[Math.floor(Math.random() * possibleBonuses.length)];
         let created = bonusesGroup.create(rand, -50, bonusDatas.sprite);
         created.setData(bonusDatas);
     }
@@ -538,6 +593,7 @@ function switchInfos(mode, level) {
         case "none":
             playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesNoShield.idle;
             playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
+            playerSpaceshipInfos.maxLifePoints = possibleSpaceships[level].maxLifePoints;
             playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
             playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
             playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
@@ -545,6 +601,7 @@ function switchInfos(mode, level) {
         case "half":
             playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldHalf.idle;
             playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
+            playerSpaceshipInfos.maxLifePoints = possibleSpaceships[level].maxLifePoints;
             playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
             playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
             playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
@@ -552,6 +609,7 @@ function switchInfos(mode, level) {
         case "full":
             playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldFull.idle;
             playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
+            playerSpaceshipInfos.maxLifePoints = possibleSpaceships[level].maxLifePoints;
             playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
             playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
             playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
