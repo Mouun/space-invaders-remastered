@@ -164,18 +164,12 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         level: 0,
         spritesShieldFull: {
             idle: "upgradeLvl0ShieldFull",
-            left: "upgradeLvl0LeftShieldFull",
-            right: "upgradeLvl0RightShieldFull",
         },
         spritesShieldHalf: {
             idle: "upgradeLvl0ShieldHalf",
-            left: "upgradeLvl0LeftShieldHalf",
-            right: "upgradeLvl0RightShieldHalf",
         },
         spritesNoShield: {
             idle: "upgradeLvl0NoShield",
-            left: "upgradeLvl0LeftNoShield",
-            right: "upgradeLvl0RightNoShield",
         },
         spaceBottom: 75,
         lifePoints: 3,
@@ -186,18 +180,12 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         level: 1,
         spritesShieldFull: {
             idle: "upgradeLvl1ShieldFull",
-            left: "upgradeLvl1LeftShieldFull",
-            right: "upgradeLvl1RightShieldFull",
         },
         spritesShieldHalf: {
             idle: "upgradeLvl1ShieldHalf",
-            left: "upgradeLvl1LeftShieldHalf",
-            right: "upgradeLvl1RightShieldHalf",
         },
         spritesNoShield: {
             idle: "upgradeLvl1NoShield",
-            left: "upgradeLvl1LeftNoShield",
-            right: "upgradeLvl1RightNoShield",
         },
         spaceBottom: 75,
         lifePoints: 4,
@@ -208,18 +196,12 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         level: 2,
         spritesShieldFull: {
             idle: "upgradeLvl2ShieldFull",
-            left: "upgradeLvl2LeftShieldFull",
-            right: "upgradeLvl2RightShieldFull",
         },
         spritesShieldHalf: {
             idle: "upgradeLvl2ShieldHalf",
-            left: "upgradeLvl2LeftShieldHalf",
-            right: "upgradeLvl2RightShieldHalf",
         },
         spritesNoShield: {
             idle: "upgradeLvl2NoShield",
-            left: "upgradeLvl2LeftNoShield",
-            right: "upgradeLvl2RightNoShield",
         },
         spaceBottom: 75,
         lifePoints: 5,
@@ -230,18 +212,12 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         level: 3,
         spritesShieldFull: {
             idle: "upgradeLvl3ShieldFull",
-            left: "upgradeLvl3LeftShieldFull",
-            right: "upgradeLvl3RightShieldFull",
         },
         spritesShieldHalf: {
             idle: "upgradeLvl3ShieldHalf",
-            left: "upgradeLvl3LeftShieldHalf",
-            right: "upgradeLvl3RightShieldHalf",
         },
         spritesNoShield: {
             idle: "upgradeLvl3NoShield",
-            left: "upgradeLvl3LeftNoShield",
-            right: "upgradeLvl3RightNoShield",
         },
         spaceBottom: 75,
         lifePoints: 6,
@@ -252,8 +228,6 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
 let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vaisseau du joueur en temps reel
     sprites: {
         idle: possibleSpaceships[level].spritesNoShield.idle, // le sprite utilise en position normale sans bouclier
-        left: possibleSpaceships[level].spritesNoShield.left, // le sprite utilise en position mouvement gauche sans bouclier
-        right: possibleSpaceships[level].spritesNoShield.right, // le sprite utilise en position mouvement droit sans bouclier
     },
     spaceBottom: possibleSpaceships[level].spaceBottom, // espace entre le vaisseau et le bas de l'ecran
     lifePoints: possibleSpaceships[level].lifePoints, // le nombre de points de vie du vaisseau (lvl0 => 3,  lvl1 => 4, lvl2 => 5, lvl3 => 6)
@@ -261,51 +235,26 @@ let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vais
     shield: "none", // permet de determiner si le vaisseau dispose d'un bonus bouclier ou pas (none => pas de bouclier, half => bouclier a 50% de capacite, full => bouclier a 100% de capacite
     shootRate: possibleSpaceships[level].shootRate // temps entre deux tirs du vaisseau
 };
-let vaisseau;
 
 //Method where I can load my assets
 function preload() {
     this.load.image('starfield', './assets/game_background.png');
 
     this.load.image('upgradeLvl0NoShield', './assets/player_level0_without_shield.png');
-    this.load.image('upgradeLvl0LeftNoShield', './assets/player_level0_left_without_shield.png');
-    this.load.image('upgradeLvl0RightNoShield', './assets/player_level0_right_without_shield.png');
     this.load.image('upgradeLvl0ShieldFull', './assets/player_level0_with_shield_full.png');
-    this.load.image('upgradeLvl0LeftShieldFull', './assets/player_level0_left_with_shield_full.png');
-    this.load.image('upgradeLvl0RightShieldFull', './assets/player_level0_right_with_shield_full.png');
     this.load.image('upgradeLvl0ShieldHalf', './assets/player_level0_with_shield_half.png');
-    this.load.image('upgradeLvl0LeftShieldHalf', './assets/player_level0_left_with_shield_half.png');
-    this.load.image('upgradeLvl0RightShieldHalf', './assets/player_level0_right_with_shield_half.png');
 
     this.load.image('upgradeLvl1NoShield', './assets/player_level1_without_shield.png');
-    this.load.image('upgradeLvl1LeftNoShield', './assets/player_level1_left_without_shield.png');
-    this.load.image('upgradeLvl1RightNoShield', './assets/player_level1_right_without_shield.png');
     this.load.image('upgradeLvl1ShieldFull', './assets/player_level1_with_shield_full.png');
-    this.load.image('upgradeLvl1LeftShieldFull', './assets/player_level1_left_with_shield_full.png');
-    this.load.image('upgradeLvl1RightShieldFull', './assets/player_level1_right_with_shield_full.png');
     this.load.image('upgradeLvl1ShieldHalf', './assets/player_level1_with_shield_half.png');
-    this.load.image('upgradeLvl1LeftShieldHalf', './assets/player_level1_left_with_shield_half.png');
-    this.load.image('upgradeLvl1RightShieldHalf', './assets/player_level1_right_with_shield_half.png');
 
     this.load.image('upgradeLvl2NoShield', './assets/player_level2_without_shield.png');
-    this.load.image('upgradeLvl2LeftNoShield', './assets/player_level2_left_without_shield.png');
-    this.load.image('upgradeLvl2RightNoShield', './assets/player_level2_right_without_shield.png');
     this.load.image('upgradeLvl2ShieldFull', './assets/player_level2_with_shield_full.png');
-    this.load.image('upgradeLvl2LeftShieldFull', './assets/player_level2_left_with_shield_full.png');
-    this.load.image('upgradeLvl2RightShieldFull', './assets/player_level2_right_with_shield_full.png');
     this.load.image('upgradeLvl2ShieldHalf', './assets/player_level2_with_shield_half.png');
-    this.load.image('upgradeLvl2LeftShieldHalf', './assets/player_level2_left_with_shield_half.png');
-    this.load.image('upgradeLvl2RightShieldHalf', './assets/player_level2_right_with_shield_half.png');
 
     this.load.image('upgradeLvl3NoShield', './assets/player_level3_without_shield.png');
-    this.load.image('upgradeLvl3LeftNoShield', './assets/player_level3_left_without_shield.png');
-    this.load.image('upgradeLvl3RightNoShield', './assets/player_level3_right_without_shield.png');
     this.load.image('upgradeLvl3ShieldFull', './assets/player_level3_with_shield_full.png');
-    this.load.image('upgradeLvl3LeftShieldFull', './assets/player_level3_left_with_shield_full.png');
-    this.load.image('upgradeLvl3RightShieldFull', './assets/player_level3_right_with_shield_full.png');
     this.load.image('upgradeLvl3ShieldHalf', './assets/player_level3_with_shield_half.png');
-    this.load.image('upgradeLvl3LeftShieldHalf', './assets/player_level3_left_with_shield_half.png');
-    this.load.image('upgradeLvl3RightShieldHalf', './assets/player_level3_right_with_shield_half.png');
 
     this.load.image('bullet', './assets/round_laser_blue.png');
     this.load.image('ennemi1', './assets/ennemi_1@0.75x.png');
@@ -379,18 +328,8 @@ function create() {
     bulletsGroup.defaults.setAllowGravity = false;
 
     this.anims.create({
-        key: 'left',
-        frames: [{ key: playerSpaceshipInfos.sprites.left, frame: 1 }],
-        frameRate: 60
-    });
-    this.anims.create({
         key: 'turn',
         frames: [{ key: playerSpaceshipInfos.sprites.idle, frame: 1 }],
-        frameRate: 60
-    });
-    this.anims.create({
-        key: 'right',
-        frames: [{ key: playerSpaceshipInfos.sprites.right, frame: 1 }],
         frameRate: 60
     });
 
@@ -434,7 +373,6 @@ function create() {
         } else if (playerSpaceshipInfos.shield === "full") {
             switchInfos("full", bonus.getData("level"));
         }
-        console.log("space-bottom = " + playerSpaceshipInfos.spaceBottom);
         bonus.destroy();
     }, null, this);
 }
@@ -599,8 +537,6 @@ function switchInfos(mode, level) {
     switch (mode) {
         case "none":
             playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesNoShield.idle;
-            playerSpaceshipInfos.sprites.left = possibleSpaceships[level].spritesNoShield.left;
-            playerSpaceshipInfos.sprites.right = possibleSpaceships[level].spritesNoShield.right;
             playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
             playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
             playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
@@ -608,8 +544,6 @@ function switchInfos(mode, level) {
             break;
         case "half":
             playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldHalf.idle;
-            playerSpaceshipInfos.sprites.left = possibleSpaceships[level].spritesShieldHalf.left;
-            playerSpaceshipInfos.sprites.right = possibleSpaceships[level].spritesShieldHalf.right;
             playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
             playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
             playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
@@ -617,13 +551,10 @@ function switchInfos(mode, level) {
             break;
         case "full":
             playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldFull.idle;
-            playerSpaceshipInfos.sprites.left = possibleSpaceships[level].spritesShieldFull.left;
-            playerSpaceshipInfos.sprites.right = possibleSpaceships[level].spritesShieldFull.right;
             playerSpaceshipInfos.spaceBottom = possibleSpaceships[level].spaceBottom;
             playerSpaceshipInfos.lifePoints = possibleSpaceships[level].lifePoints;
             playerSpaceshipInfos.scaleCoefficient = possibleSpaceships[level].scaleCoefficient;
             playerSpaceshipInfos.shootRate = possibleSpaceships[level].shootRate;
             break;
     }
-    console.log(playerSpaceshipInfos);
 }
