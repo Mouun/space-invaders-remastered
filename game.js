@@ -46,7 +46,8 @@ let config = {
 
 let game = new Phaser.Game(config);
 
-let timeBetweenBonuses = 1000;
+let timeBetweenBonuses = 30000;
+let timeBetweenMovement = 1500; // Temps entre chaque mouvement des ennemis
 let gameWidth = game.config.width;
 let gameHeight = game.config.height;
 let playerScore = 0; // le score du joueur
@@ -175,7 +176,13 @@ let possibleUpgradeBonuses = [
 ];
 let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
 let timerEvent;
+let timerEventEnnemis; // Le timer qui va lancer le trigger de déplacement de chaque ennemis
 let scoreText;
+let touchBorderRight = false;
+let touchBorderLeft = false;
+let travelDownOnce = false; // Variable levier qui va servir au déplacement vers le bas lors qu'un des bords à été atteind
+let lateralMovementSize = 30;
+let downMovementSize = 10;
 let lifeText;
 let cursors; // Objet Phaser representatif du clavier (pour les touches)
 let level = 0; // le niveau du vaisseau du joueur
@@ -317,6 +324,7 @@ function create() {
     playerScore = 0;
     restartButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
+    timerEventEnnemis = this.time.addEvent({delay: timeBetweenMovement, callback: checkBeforeMoveEnnemis, loop: true});
     setEnemiesWidths(this);
     gameEnemies.forEach((enemy) => {
         calculateMaxEnnemiesPerRow(enemy);
@@ -382,6 +390,7 @@ function create() {
         frameRate: 60
     });
 
+
     playerSpaceship = this.physics.add.group().create(gameWidth / 2, gameHeight - playerSpaceshipInfos.spaceBottom, playerSpaceshipInfos.sprites.idle);
     playerSpaceship.setData(playerSpaceshipInfos);
     playerSpaceship.body.allowGravity = false;
@@ -426,8 +435,10 @@ function create() {
     }, null, this);
 }
 
+
 function update(time, delta) {
     starfield.tilePositionY -= scrollSpeed;
+
     if (cursors.left.isDown) {
         if (playerSpaceship.x < 0) {
             playerSpaceship.x = gameWidth;
@@ -464,9 +475,55 @@ function update(time, delta) {
         this.scene.restart();
     }
 
-    updateSpaceship(this);
 
+    updateSpaceship(this);
     drawNewBonus(timerEvent);
+}
+
+/**
+ *
+ * Cette fonction permet de vérifier si les invaders on atteind un des deux bords
+ * Si c'est le cas il bouge une fois vers le bas et se déplace dans le sens opposé et tout recommence.
+ *
+ **/
+
+function checkBeforeMoveEnnemis() {
+    enemiesGroup.getChildren().forEach((current) => {
+        if (current.x + current.width/2 >= gameWidth) {
+            touchBorderRight = true;
+            touchBorderLeft = false;
+            travelDownOnce = !travelDownOnce;
+        } else if (current.x - current.width/2 <= 0) {
+            touchBorderLeft = true;
+            touchBorderRight = false;
+            travelDownOnce = !travelDownOnce;
+        }
+    });
+
+    if ((touchBorderRight || touchBorderLeft) && travelDownOnce) {
+        moveEnnemis(null, true);
+    } else if (!touchBorderRight) {
+        moveEnnemis(lateralMovementSize, false);
+
+    } else if (!touchBorderLeft) {
+        moveEnnemis(-lateralMovementSize, false);
+
+    }
+}
+
+/**
+ * Simple fonction utilitaire qui permet de déplacer les invaders
+ * @param movement
+ * @param down
+ */
+function moveEnnemis(movement, down) {
+    enemiesGroup.getChildren().forEach((current) => {
+        if (down) {
+            current.y += downMovementSize;
+        } else {
+            current.x = current.x + movement;
+        }
+    });
 }
 
 /**
