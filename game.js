@@ -48,10 +48,12 @@ let game = new Phaser.Game(config);
 
 let timeBetweenBonuses = 30000;
 let timeBetweenMovement = 1500; // Temps entre chaque mouvement des ennemis
+let timeBetweenEnnemyShot = 5000;
 let gameWidth = game.config.width;
 let gameHeight = game.config.height;
 let playerScore = 0; // le score du joueur
 let bulletsGroup;
+let ennemisBulletsGroup;
 let speed;
 let lastFired = 0;
 let bulletObject;
@@ -177,6 +179,7 @@ let possibleUpgradeBonuses = [
 let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
 let timerEvent;
 let timerEventEnnemis; // Le timer qui va lancer le trigger de déplacement de chaque ennemis
+let timerEventTirEnnemis; // Le timer qui va lancer le trigger de déplacement de chaque ennemis
 let scoreText;
 let touchBorderRight = false;
 let touchBorderLeft = false;
@@ -325,6 +328,7 @@ function create() {
     restartButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     timerEvent = this.time.addEvent({ delay: timeBetweenBonuses, callback: drawNewBonus, loop: true });
     timerEventEnnemis = this.time.addEvent({delay: timeBetweenMovement, callback: checkBeforeMoveEnnemis, loop: true});
+    timerEventTirEnnemis = this.time.addEvent({delay: timeBetweenEnnemyShot, callback: makeEnnemisFire, loop: true});
     setEnemiesWidths(this);
     gameEnemies.forEach((enemy) => {
         calculateMaxEnnemiesPerRow(enemy);
@@ -370,6 +374,32 @@ function create() {
         }
     });
 
+    let ennemyBullet = new Phaser.Class({
+
+        Extends: Phaser.GameObjects.Image,
+
+        initialize: function Bullet(scene) {
+            bulletObject = Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
+            this.speed = Phaser.Math.GetSpeed(400, 1);
+        },
+
+        fire: function (x, y) {
+            this.setPosition(x, y + 50);
+
+            this.setActive(true);
+            this.setVisible(true);
+        },
+
+        update: function (time, delta) {
+            this.y += this.speed * delta;
+
+            if (this.y > gameHeight) {
+                this.setActive(false);
+                this.setVisible(false);
+            }
+        }
+    });
+
     bonusesGroup = this.physics.add.group();
     upgradesGroup = this.physics.add.group();
     enemiesGroup = this.physics.add.group();
@@ -383,6 +413,13 @@ function create() {
         runChildUpdate: true
     });
     bulletsGroup.defaults.setAllowGravity = false;
+
+    ennemisBulletsGroup = this.physics.add.group({
+        classType: ennemyBullet,
+        maxSize: 100,
+        runChildUpdate: true
+    });
+    ennemisBulletsGroup.defaults.setAllowGravity = false;
 
     this.anims.create({
         key: 'turn',
@@ -414,6 +451,11 @@ function create() {
             enemy.destroy();
             sprites.play("ennemyDeath");
         }
+        bullet.destroy();
+    }, null, this);
+
+    this.physics.add.overlap(playerSpaceship, ennemisBulletsGroup, (playerSpaceship, bullet) => {
+        console.log("touché tes nul");
         bullet.destroy();
     }, null, this);
 
@@ -478,6 +520,19 @@ function update(time, delta) {
 
     updateSpaceship(this);
     drawNewBonus(timerEvent);
+}
+
+function makeEnnemisFire() {
+
+    enemiesGroup.getChildren().forEach((current) => {
+        let bullet = ennemisBulletsGroup.get();
+
+        if (bullet) {
+            bullet.fire(current.x, current.y);
+            // sprites.play("shot");
+            // lastFired = time + playerSpaceshipInfos.shootRate;
+        }
+    });
 }
 
 /**
