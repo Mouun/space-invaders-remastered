@@ -101,19 +101,39 @@ let gameEnemies = [ // tableau representatif des differents ennemis du jeu et de
 let possibleBonuses = [
     {
         sprite: "bonus1",
-        nbPoints: 10
+        action: () => {
+            let oldShootRate = playerSpaceshipInfos.shootRate;
+            playerSpaceshipInfos.shootRate -= 200;
+            console.log("increase shootrate");
+            setTimeout(
+                function() {
+                    playerSpaceshipInfos.shootRate = oldShootRate;
+                }, 3000);
+        }
     },
     {
         sprite: "bonus2",
-        nbPoints: 10
+        action: () => {
+            console.log("heal player");
+        }
     },
     {
         sprite: "bonus3",
-        nbPoints: 10
+        action: () => {
+            console.log("give shield");
+        }
     },
     {
         sprite: "bonus4",
-        nbPoints: 10
+        action: () => {
+            console.log("laser shoot");
+        }
+    },
+    {
+        sprite: "bonus5",
+        action: () => {
+            console.log("random shoot");
+        }
     }
 ];
 let possibleUpgradeBonuses = [
@@ -160,7 +180,7 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         spaceBottom: 75,
         lifePoints: 3,
         scaleCoefficient: 1,
-        shootRate: 500
+        shootRate: 800
     },
     {
         level: 1,
@@ -182,7 +202,7 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         spaceBottom: 75,
         lifePoints: 4,
         scaleCoefficient: 1,
-        shootRate: 450
+        shootRate: 700
     },
     {
         level: 2,
@@ -204,7 +224,7 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         spaceBottom: 75,
         lifePoints: 5,
         scaleCoefficient: 1,
-        shootRate: 400
+        shootRate: 600
     },
     {
         level: 3,
@@ -226,7 +246,7 @@ let possibleSpaceships = [ // Objet representatif des caracteristiques du vaisse
         spaceBottom: 75,
         lifePoints: 6,
         scaleCoefficient: 1,
-        shootRate: 350
+        shootRate: 500
     }
 ];
 let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vaisseau du joueur en temps reel
@@ -239,7 +259,7 @@ let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vais
     lifePoints: possibleSpaceships[level].lifePoints, // le nombre de points de vie du vaisseau (lvl0 => 3,  lvl1 => 4, lvl2 => 5, lvl3 => 6)
     scaleCoefficient: possibleSpaceships[level].scaleCoefficient, // le coefficient de redimensionnement du sprite
     shield: "none", // permet de determiner si le vaisseau dispose d'un bonus bouclier ou pas (none => pas de bouclier, half => bouclier a 50% de capacite, full => bouclier a 100% de capacite
-    shootRate: 50 // temps entre deux tirs du vaisseau
+    shootRate: possibleSpaceships[level].shootRate // temps entre deux tirs du vaisseau
 };
 let vaisseau;
 
@@ -296,6 +316,7 @@ function preload() {
     this.load.image('bonus2', './assets/star_laser_green.png');
     this.load.image('bonus3', './assets/star_laser_pink.png');
     this.load.image('bonus4', './assets/star_laser_yellow.png');
+    this.load.image('bonus5', './assets/long_laser_blue.png');
 
     this.load.image('upgrade1', './assets/laser_blue.png');
     this.load.image('upgrade2', './assets/laser_green.png');
@@ -400,6 +421,7 @@ function create() {
     }, null, this);
 
     this.physics.add.overlap(playerSpaceship, bonusesGroup, (playerSpaceship, bonus) => {
+        bonus.data.values.action();
         bonus.destroy();
     }, null, this);
 
@@ -551,10 +573,10 @@ function drawUpgradeBonus(level) {
 
 function drawNewBonus() {
     if (timerEvent.getProgress() === 1) {
-        console.log("Bonus");
         let rand = getRandomX();
-        console.log(rand);
-        bonusesGroup.create(rand, -50, possibleBonuses[Math.floor(Math.random() * possibleBonuses.length)].sprite);
+        let bonusDatas = possibleBonuses[0];
+        let created = bonusesGroup.create(rand, -50, bonusDatas.sprite);
+        created.setData(bonusDatas);
     }
 }
 
