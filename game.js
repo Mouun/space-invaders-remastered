@@ -373,6 +373,7 @@ function create() {
         frameRate: 60
     });
 
+
     playerSpaceship = this.physics.add.group().create(gameWidth / 2, gameHeight - playerSpaceshipInfos.spaceBottom, playerSpaceshipInfos.sprites.idle);
     playerSpaceship.setData(playerSpaceshipInfos);
     playerSpaceship.body.allowGravity = false;
@@ -417,8 +418,10 @@ function create() {
     }, null, this);
 }
 
+
 function update(time, delta) {
     starfield.tilePositionY -= scrollSpeed;
+
     if (cursors.left.isDown) {
         if (playerSpaceship.x < 0) {
             playerSpaceship.x = gameWidth;
@@ -453,7 +456,26 @@ function update(time, delta) {
         moveSpeed = initialMoveSpeed;
     }
 
+
+    updateSpaceship(this);
+
+    moveEnnemis(time, delta);
     drawNewBonus(timerEvent);
+}
+
+
+/**
+ *
+ * Cette fonction permet de déplacer les ennemis de façon random (dans un premier).
+ *
+ *
+ **/
+
+function moveEnnemis(time, delta) {
+
+    if (Math.trunc(time) % 200 === 0) {
+        console.log("Houra");
+    }
 }
 
 /**
