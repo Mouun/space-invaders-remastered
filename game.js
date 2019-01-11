@@ -168,6 +168,7 @@ let possibleBonuses = [
 
                 scores.push({name: localStorage.getItem("actualPlayer"), score: playerScore});
                 localStorage.setItem("scores", JSON.stringify(scores));
+                window.location.replace("https://mouun.github.io/space-invaders-remastered/");
             } else {
                 if (playerSpaceshipInfos.shield === "full") {
                     playerSpaceshipInfos.shield = "half";
@@ -504,6 +505,7 @@ function create() {
             localStorage.setItem("scores", JSON.stringify(scores));
             console.log(JSON.parse(localStorage.getItem("scores")));
 
+            window.location.replace("https://mouun.github.io/space-invaders-remastered/");
         } else {
             if (playerSpaceshipInfos.shield === "full") {
                 playerSpaceshipInfos.shield = "half";
