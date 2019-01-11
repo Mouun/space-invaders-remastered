@@ -48,3 +48,4 @@ Présentation du projet en classe le Vendredi 11 Janvier 2019 à l'aide d'un Pre
 
 Nos points forts et nos points faibles, les diffcultés que nous avons rencontrées : 
 | Positif | Négatif | |----------|:-------------:|| Projet pédagogique| Beaucoup de nouveautés |
+| Tables | Are | Cool | |----------|:-------------:|------:| | col 1 is| left-aligned | $1600 |
