@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scores</title>
+    <link rel="stylesheet" type="text/css" href="theme.css">
+</head>
+<body onload="loadScores()">
+<div id="scores"></div>
+<CENTER><p id="empty"></p></CENTER>
+
+</body>
+</html>
+
+<script>
+    function loadScores() {
+
+        let options = JSON.parse(localStorage.getItem("scores"));
+
+        console.log(options);
+        if (options == null) {
+            console.log("null");
+            document.getElementById("empty").innerHTML = "Pas encores de scores";
+        } else {
+            if (options.length === 0) {
+                console.log("vide");
+                document.getElementById("empty").innerHTML = "Pas encores de scores";
+            } else {
+                // Add the contents of options[0] to #foo:
+                document.getElementById('scores').appendChild(makeUL(options));
+            }
+        }
+    }
+
+    function makeUL(array) {
+        // Create the list element:
+        let list = document.createElement('ul');
+
+        array.forEach((current, index) => {
+            let place = index + 1;
+            let item = document.createElement('li');
+            let joueur = current.name;
+            let score = current.score;
+            // Set its contents:
+            item.appendChild(document.createTextNode(place + " - " + joueur + " - scores:  " + score));
+
+            // Add it to the list:
+            list.appendChild(item);
+        });
+        return list;
+    }
+</script>

@@ -157,6 +157,17 @@ let possibleBonuses = [
                 playerSpaceshipInfos.lifePoints--;
                 sprites.play("playerDeath");
                 game.scene.pause("default");
+
+                console.log(localStorage.getItem("actualPlayer"));
+
+                let scores;
+
+                scores = JSON.parse(localStorage.getItem("scores"));
+                console.log(scores);
+
+
+                scores.push({name: localStorage.getItem("actualPlayer"), score: playerScore});
+                localStorage.setItem("scores", JSON.stringify(scores));
             } else {
                 if (playerSpaceshipInfos.shield === "full") {
                     playerSpaceshipInfos.shield = "half";
@@ -483,6 +494,16 @@ function create() {
             playerSpaceshipInfos.lifePoints--;
             sprites.play("playerDeath");
             game.scene.pause("default");
+
+
+            let scores;
+
+            scores = JSON.parse(localStorage.getItem("scores"));
+
+            scores.push({name: localStorage.getItem("actualPlayer"), score: playerScore});
+            localStorage.setItem("scores", JSON.stringify(scores));
+            console.log(JSON.parse(localStorage.getItem("scores")));
+
         } else {
             if (playerSpaceshipInfos.shield === "full") {
                 playerSpaceshipInfos.shield = "half";

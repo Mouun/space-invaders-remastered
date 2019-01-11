@@ -68,3 +68,21 @@ img
 	color: yellow;
 	font-size: 16px;
 }
+
+p {
+	color: yellow;
+	font-family: PoliceJeu;
+	font-size: 40px;
+}
+
+ul {
+	text-align: center;
+	list-style:none;
+}
+li {
+	color: yellow;
+	font-family: PoliceJeu;
+	font-size: 40px;
+	text-align: center;
+	list-style:none;
+}

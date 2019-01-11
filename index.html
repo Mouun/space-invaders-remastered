@@ -1,17 +1,18 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Space Invaders Remastered</title>
     <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
 
-<body>
+<body onload="myFunction()">
 
 	<br /><br /><br /><br /><br /><br />
+    <CENTER><p id="nomJoueur"></p></CENTER>
     <CENTER><a href="ouverture.html" title="Jouer">PLAY</a></CENTER>
     <br /><br /><br />
-    <CENTER><a href="score.html" title="Score">SCORES (En construction)</a></CENTER>
+    <CENTER><a href="score.html" title="Score">SCORES</a></CENTER>
     <br /><br /><br />
     <button class="accordion">CREDITS</button>
     <div class="panel">
@@ -25,6 +26,20 @@
     </div>
     <br /><br /><br />
     <CENTER><img src="assets/ennemi.png" border=0 width=165 height=110></CENTER>
+
+<script>
+    function myFunction() {
+        let person = prompt("Please enter your name");
+        if (person != null) {
+            document.getElementById("nomJoueur").innerHTML = "🛸 Bonjour " + person + " ! 🛸";
+            localStorage.setItem("actualPlayer", person);
+
+            if (localStorage.getItem("scores") == null) {
+                localStorage.setItem("scores", JSON.stringify([]));
+            }
+        }
+    }
+</script>
 
 </body>
 
