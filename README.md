@@ -32,10 +32,10 @@ Niveau 10 toutes les 15 secondes.
 Nos "upgrades" sont les suivantes : 
 
 - Une "upgrade" pour chaque type de vaisseau (4 types de vaisseau)
-	Vaisseau 1 : 3 points de vie et une vitesse de tir très faible (au début du jeu par défaut)
-	Vaisseau 2 : 4 points de vie et une vitesse de tir faible (au bout de 10 points obtenus)
-	Vaisseau 3 : 5 points de vie et une vitesse de tir correcte (au bout de 30 points obtenus)
-	Vaisseau 4 : 6 points de vie et une vitesse de tir rapide (au bout de 50 points obtenus)
+	- Vaisseau 1 : 3 points de vie et une vitesse de tir très faible (au début du jeu par défaut)
+	- Vaisseau 2 : 4 points de vie et une vitesse de tir faible (au bout de 10 points obtenus)
+	- Vaisseau 3 : 5 points de vie et une vitesse de tir correcte (au bout de 30 points obtenus)
+	- Vaisseau 4 : 6 points de vie et une vitesse de tir rapide (au bout de 50 points obtenus)
 - Une "upgrade" pour changer la vitesse de déplacement du vaisseau (en fonction du vaisseau obtenu, voir liste ci-dessus)
 - Une "upgrade" pour obtenir un bouclier qui donne 2 points de vie supplémentaires
 
