@@ -34,7 +34,7 @@ let config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 175 },
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -107,11 +107,13 @@ let possibleBonuses = [
     {
         sprite: "bonus1",
         action: () => { // acceleration de la vitesse de tir
-            let oldShootRate = playerSpaceshipInfos.shootRate;
-            playerSpaceshipInfos.shootRate -= 400;
-            setTimeout(() => {
-                playerSpaceshipInfos.shootRate = oldShootRate;
-            }, 5000);
+            if (playerSpaceshipInfos.shootRate >= 400) {
+                let oldShootRate = playerSpaceshipInfos.shootRate;
+                playerSpaceshipInfos.shootRate -= 400;
+                setTimeout(() => {
+                    playerSpaceshipInfos.shootRate = oldShootRate;
+                }, 5000);
+            }
         }
     },
     {
@@ -126,6 +128,7 @@ let possibleBonuses = [
         sprite: "bonus3",
         action: () => { // ajout un bouclier au joueur
             if (playerSpaceshipInfos.shield === "none") {
+                sprites.play("shieldUpgrade");
                 playerSpaceshipInfos.shield = "full";
                 shieldInfos.lifePoints = 2;
                 playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldFull.idle;
@@ -152,6 +155,7 @@ let possibleBonuses = [
         action: () => { // perte d'un point de vie
             if (playerSpaceshipInfos.lifePoints === 1 && shieldInfos.lifePoints === 0) {
                 playerSpaceshipInfos.lifePoints--;
+                sprites.play("playerDeath");
                 game.scene.pause("default");
             } else {
                 if (playerSpaceshipInfos.shield === "full") {
@@ -311,22 +315,22 @@ function preload() {
     this.load.image('upgradeLvl3ShieldHalf', './assets/player_level3_with_shield_half.png');
 
     this.load.image('bullet', './assets/round_laser_blue.png');
-    this.load.image('bulletLaser', './assets/laser_blue.png');
+    this.load.image('bulletLaser', './assets/long_laser_blue.png');
     this.load.image('bulletEnemies', './assets/round_laser_pink.png');
     this.load.image('ennemi1', './assets/ennemi_1@0.75x.png');
     this.load.image('ennemi2', './assets/ennemi_2@0.75x.png');
     this.load.image('ennemi3', './assets/ennemi_3@0.75x.png');
     this.load.image('ennemi4', './assets/ennemi_4@0.75x.png');
-    this.load.image('bonus1', './assets/star_laser_blue.png');
-    this.load.image('bonus2', './assets/star_laser_green.png');
-    this.load.image('bonus3', './assets/star_laser_pink.png');
-    this.load.image('bonus4', './assets/star_laser_yellow.png');
+    this.load.image('bonus1', './assets/fast_shoot.png');
+    this.load.image('bonus2', './assets/heal.png');
+    this.load.image('bonus3', './assets/shield.png');
+    this.load.image('bonus4', './assets/laserShoot.png');
 
-    this.load.image('malus', './assets/long_laser_green.png');
+    this.load.image('malus', './assets/malus.png');
 
-    this.load.image('upgrade1', './assets/laser_blue.png');
-    this.load.image('upgrade2', './assets/laser_green.png');
-    this.load.image('upgrade3', './assets/laser_pink.png');
+    this.load.image('upgrade1', './assets/upgrade1.png');
+    this.load.image('upgrade2', './assets/upgrade2.png');
+    this.load.image('upgrade3', './assets/upgrade3.png');
 }
 
 //Methode executee juste apres preload
@@ -477,6 +481,7 @@ function create() {
         invulnerable = true;
         if (playerSpaceshipInfos.lifePoints === 1 && shieldInfos.lifePoints === 0) {
             playerSpaceshipInfos.lifePoints--;
+            sprites.play("playerDeath");
             game.scene.pause("default");
         } else {
             if (playerSpaceshipInfos.shield === "full") {
@@ -513,6 +518,7 @@ function create() {
         } else if (playerSpaceshipInfos.shield === "full") {
             switchInfos("full", bonus.getData("level"));
         }
+        sprites.play("gunUpgrade");
         bonus.destroy();
     }, null, this);
 }
