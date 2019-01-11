@@ -47,7 +47,7 @@ let config = {
 let game = new Phaser.Game(config);
 
 let nbWavesCleared = 1;
-let timeBetweenBonuses = 30000;
+let timeBetweenBonuses = 10000;
 let timeBetweenMovement = 1500; // Temps entre chaque mouvement des ennemis
 let timeBetweenEnnemyShot = 5000;
 let gameWidth = game.config.width;
@@ -567,6 +567,7 @@ function update(time, delta) {
         if (nbWavesCleared < 10) {
             timerEventEnnemis.delay -= 80;
             timerEvent.delay -= 3000;
+            timerEventTirEnnemis.delay -= 500;
         }
         resetPlayerSpaceship();
         touchBorderRight = false;
