@@ -75,13 +75,33 @@ p {
 	font-size: 40px;
 }
 
+.panel p {
+	color: white;
+	font-size: 16px;
+}
+
 ul {
 	text-align: center;
 	list-style:none;
 }
 li {
-	color: yellow;
+	color: white;
 	font-family: PoliceJeu;
+	font-size: 16px;
+	text-align: center;
+	list-style:none;
+}
+
+.wrapper {
+	text-align: center;
+}
+
+#btnRetour {
+	color: white;
+
+	font-family: PoliceJeu;
+	background-color: transparent;
+	border: none;
 	font-size: 40px;
 	text-align: center;
 	list-style:none;
