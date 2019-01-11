@@ -21,8 +21,8 @@ Nous voulons implémenter plusieurs types de tirs, que le joueur pourra utiliser
 pendant la partie. Les différents types de tirs seront les suivants:
 
 - Le tir basique (en début de partie)
-- Le tir basique plus rapide (une amélioration du tir avec une cadences plus élevé) dure une trentaine de secondes
-- Le tir en "bataille" (un tir ou l'angle de départ varie légèrement), dure une trentaine de secondes
+- Le tir basique plus rapide (une amélioration du tir avec une cadence plus élevé) dure une trentaine de secondes
+- Le tir ????
 - Le tir qui ne s'arrête pas au premier ennemi (ne dure que quelques secondes)
 
 Concernant les "upgrades" que nous voulont mettre en place sont les suivantes:
@@ -32,6 +32,6 @@ Concernant les "upgrades" que nous voulont mettre en place sont les suivantes:
 - Une "upgrade" pour augmenter le nombre de vies du vaisseau
 - Une "upgrade" pour tuer le joueur (une sorte de malus)
 
-Le jeu est hébergé [ici](https://mouun.github.io/space-invaders-remastered/) 
+Le jeu est hébergé [ici](https://mouun.github.io/space-invaders-remastered/).
 
 Présentation du projet en classe le Vendredi 11 Janvier 2019 à l'aide d'un Prezi ([prezi.com](https://prezi.com/p/pm8udgrcgxvr/))
