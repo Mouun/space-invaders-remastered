@@ -186,6 +186,7 @@ let possibleUpgradeBonuses = [
         nbPointsRequired: 45,
     }
 ];
+let invulnerable = false;
 let verticalSpacing = 70; // espacement vertical entre chaque ligne d'ennemi
 let timerEvent;
 let timerEventEnnemis; // Le timer qui va lancer le trigger de déplacement de chaque ennemis
@@ -287,6 +288,7 @@ let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vais
     damage: 1 // les degats du joueur
 };
 let restartButton;
+let enemiesBulletsCollider;
 
 //Method where I can load my assets
 function preload() {
@@ -471,8 +473,29 @@ function create() {
         bullet.destroy();
     }, null, this);
 
-    this.physics.add.overlap(playerSpaceship, ennemisBulletsGroup, (playerSpaceship, bullet) => {
-        console.log("touché tes nul");
+    enemiesBulletsCollider = this.physics.add.overlap(playerSpaceship, ennemisBulletsGroup, (playerSpaceship, bullet) => {
+        invulnerable = true;
+        if (playerSpaceshipInfos.lifePoints === 1 && shieldInfos.lifePoints === 0) {
+            playerSpaceshipInfos.lifePoints--;
+            game.scene.pause("default");
+        } else {
+            if (playerSpaceshipInfos.shield === "full") {
+                playerSpaceshipInfos.shield = "half";
+                playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesShieldHalf.idle;
+                shieldInfos.lifePoints--;
+            } else if (playerSpaceshipInfos.shield === "half") {
+                playerSpaceshipInfos.shield = "none";
+                playerSpaceshipInfos.sprites.idle = possibleSpaceships[level].spritesNoShield.idle;
+                shieldInfos.lifePoints--;
+            } else {
+                playerSpaceshipInfos.lifePoints--;
+            }
+        }
+        setTimeout(() => {
+            enemiesBulletsCollider.active = true;
+            invulnerable = false;
+        }, 1500);
+
         bullet.destroy();
     }, null, this);
 
@@ -563,6 +586,10 @@ function update(time, delta) {
         if (bullet) {
             bullet.setTexture("bullet");
         }
+    }
+
+    if (invulnerable === true) {
+        enemiesBulletsCollider.active = false;
     }
 
     updateSpaceship(this);
