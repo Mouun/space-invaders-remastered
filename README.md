@@ -17,20 +17,30 @@ Ntre version sera une amélioration du jeu original, dont nous nous inspirons, e
 Nous avons ce [site](http://www.classicgaming.cc/classics/space-invaders/sounds) qui nous permet de récupérer des images et des sons fidèles au jeu classique.
 Pour commencer nous nous inspirerons du premier rendu de Filipe.
 
-Nous voulons implémenter plusieurs types de tirs, que le joueur pourra utiliser en fonction des "upgrade" qu'il récuperera
-pendant la partie. Les différents types de tirs seront les suivants:
+Nous voulons implémenter plusieurs types de tirs, que le joueur pourra utiliser en fonction des "upgrades" qu'il récuperera pendant la partie. Les différents types de tirs seront les suivants:
 
-- Le tir basique (en début de partie)
-- Le tir basique plus rapide (une amélioration du tir avec une cadence plus élevé) dure une trentaine de secondes
-- Le tir ????
-- Le tir qui ne s'arrête pas au premier ennemi (ne dure que quelques secondes)
+- Le tir basique (en début de partie et inflige un point de dégât sur les ennemis)
+- Le tir basique plus rapide (une amélioration du tir avec une cadence plus élevé et inflige toujours un point de dégât sur les ennemis) dure 5 secondes
+- Le tir avancé (encore plus rapide, le sprite change et inflige deux points de dégât sur les ennemis) dure 3 secondes
 
-Concernant les "upgrades" que nous voulont mettre en place sont les suivantes:
+Concernant les "upgrades" que nous voulons mettre en place, nous avons gérer le temps de génération comme suit :
 
-- Une "upgrade" pour chaque type de tir
-- Une "upgrade" pour changer la vitesse de déplacement du vaisseau
-- Une "upgrade" pour augmenter le nombre de vies du vaisseau
-- Une "upgrade" pour tuer le joueur (une sorte de malus)
+Niveau 1 toutes les 30 secondes
+Ce temps décrémente de 1.5 secondes.
+Niveau 10 toutes les 15 secondes.
+
+Nos "upgrades" sont les suivantes : 
+
+- Une "upgrade" pour chaque type de vaisseau (4 types de vaisseau)
+	Vaisseau 1 : 3 points de vie et une vitesse de tir très faible (au début du jeu par défaut)
+	Vaisseau 2 : 4 points de vie et une vitesse de tir faible (au bout de 10 points obtenus)
+	Vaisseau 3 : 5 points de vie et une vitesse de tir correcte (au bout de 30 points obtenus)
+	Vaisseau 4 : 6 points de vie et une vitesse de tir rapide (au bout de 50 points obtenus)
+- Une "upgrade" pour changer la vitesse de déplacement du vaisseau (en fonction du vaisseau obtenu, voir liste ci-dessus)
+- Une "upgrade" pour obtenir un bouclier qui donne 2 points de vie supplémentaires
+
+- Un malus pour le joueur (qui tombe et qui enlève un point de vie)
+- Un bonus pour le joueur (qui tombe et qui donne un point de vie)
 
 Le jeu est hébergé [ici](https://mouun.github.io/space-invaders-remastered/).
 
