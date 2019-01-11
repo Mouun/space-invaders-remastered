@@ -47,7 +47,7 @@ let config = {
 let game = new Phaser.Game(config);
 
 let nbWavesCleared = 1;
-let timeBetweenBonuses = 45000;
+let timeBetweenBonuses = 30000;
 let timeBetweenMovement = 1500; // Temps entre chaque mouvement des ennemis
 let timeBetweenEnnemyShot = 5000;
 let gameWidth = game.config.width;
@@ -187,7 +187,7 @@ let possibleUpgradeBonuses = [
     {
         sprite: "upgrade3",
         level: 3,
-        nbPointsRequired: 45,
+        nbPointsRequired: 50,
     }
 ];
 let invulnerable = false;
@@ -603,7 +603,6 @@ function update(time, delta) {
 }
 
 function makeEnnemisFire() {
-
     enemiesGroup.getChildren().forEach((current) => {
         let bullet = ennemisBulletsGroup.get();
 

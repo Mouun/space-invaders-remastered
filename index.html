@@ -13,8 +13,36 @@
     <br /><br /><br />
     <CENTER><a href="score.html" title="Score">SCORES (En construction)</a></CENTER>
     <br /><br /><br />
+    <button class="accordion">CREDITS</button>
+    <div class="panel">
+        <p>CE JEU A ETE REALISE  PAR</p>
+        <p>Filipe DOUTEL SILVA</p>
+        <p>Marion POESY</p>
+        <p>Sorel NADAUD</p>
+        <p>ETUDIANTS EN LICENCE 3 MIAGE A SOPHIA ANTIPOLIS</p>
+        <br>
+        <p>LA LIBRAIRIE <a href="https://phaser.io/">PHASER</a> A ETE UTILISEE</p>
+    </div>
+    <br /><br /><br />
     <CENTER><img src="assets/ennemi.png" border=0 width=165 height=110></CENTER>
 
 </body>
+
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+</script>
 
 </html>

@@ -1,19 +1,19 @@
-body 
+body
 {
 	color:black;
 	background-color:white;
 	background-image:url(assets/game_background.png);
 }
 
-@font-face 
+@font-face
 {
 
-    font-family: 'PoliceJeu';
-    src: 
-    	url(font/space_invaders.eot) format('eot'),
-    	url(font/space_invaders.woff) format('woff'),
-    	url(font/space_invaders.ttf) format('truetype'),
-    	url(font/space_invaders.svg) format('svg');
+	font-family: 'PoliceJeu';
+	src:
+			url(font/space_invaders.eot) format('eot'),
+			url(font/space_invaders.woff) format('woff'),
+			url(font/space_invaders.ttf) format('truetype'),
+			url(font/space_invaders.svg) format('svg');
 }
 
 a, a:hover, a:visited, a:active, a:link
@@ -23,7 +23,7 @@ a, a:hover, a:visited, a:active, a:link
 	text-decoration: none;
 	text-align: center;
 	font-size: 40px;
-} 
+}
 
 img
 {
@@ -32,4 +32,39 @@ img
 	margin-left:auto;
 	margin-right:auto;
 
+}
+
+.accordion {
+	background-color: transparent;
+	color: white;
+	font-family: PoliceJeu;
+	text-decoration: none;
+	text-align: center;
+	font-size: 40px;
+	cursor: pointer;
+	padding: 18px;
+	width: 100%;
+	border: none;
+	outline: none;
+	transition: 0.4s;
+}
+
+.active, .accordion:hover {
+	background-color: transparent;
+}
+
+.panel {
+	padding: 0 18px;
+	color: white;
+	font-size: 16px;
+	font-family: PoliceJeu;
+	text-align: center;
+	display: none;
+	background-color: transparent;
+	overflow: hidden;
+}
+
+.panel a {
+	color: yellow;
+	font-size: 16px;
 }
