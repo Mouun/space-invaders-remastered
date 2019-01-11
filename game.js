@@ -58,6 +58,7 @@ let bulletsGroup;
 let ennemisBulletsGroup;
 let speed;
 let lastFired = 0;
+let laserShoot = false;
 let bulletObject;
 let initialMoveSpeed = 2.5 + (gameWidth * 0.003); // vitesse de reference utilisee notamment pour reinitialiser la vitesse apres un dash
 let moveSpeed = initialMoveSpeed; // vitesse du vaisseau du joueur generale, initialement a la vitesse de reference
@@ -110,7 +111,7 @@ let possibleBonuses = [
             playerSpaceshipInfos.shootRate -= 400;
             setTimeout(() => {
                 playerSpaceshipInfos.shootRate = oldShootRate;
-            }, 3000);
+            }, 5000);
         }
     },
     {
@@ -133,13 +134,22 @@ let possibleBonuses = [
     },
     {
         sprite: "bonus4",
-        action: () => {
-            console.log("random shoot");
+        action: () => { // tir tres rapide qui enleve deux points de vie a l'ennemi au lieu d'un
+            let oldShootRate = playerSpaceshipInfos.shootRate;
+            let oldDamage = playerSpaceshipInfos.damage;
+            laserShoot = true;
+            playerSpaceshipInfos.shootRate = 200;
+            playerSpaceshipInfos.damage = 2;
+            setTimeout(() => {
+                playerSpaceshipInfos.shootRate = oldShootRate;
+                laserShoot = false;
+                playerSpaceshipInfos.damage = oldDamage;
+            }, 3000);
         }
     },
     {
         sprite: "malus",
-        action: () => {
+        action: () => { // perte d'un point de vie
             if (playerSpaceshipInfos.lifePoints === 1 && shieldInfos.lifePoints === 0) {
                 playerSpaceshipInfos.lifePoints--;
                 game.scene.pause("default");
@@ -156,7 +166,6 @@ let possibleBonuses = [
                     playerSpaceshipInfos.lifePoints--;
                 }
             }
-            console.log("malus");
         }
     }
 ];
@@ -274,7 +283,8 @@ let playerSpaceshipInfos = { // Objet representatif des caracteristiques du vais
     lifePoints: possibleSpaceships[level].lifePoints, // le nombre de points de vie du vaisseau (lvl0 => 3,  lvl1 => 4, lvl2 => 5, lvl3 => 6)
     scaleCoefficient: possibleSpaceships[level].scaleCoefficient, // le coefficient de redimensionnement du sprite
     shield: "none", // permet de determiner si le vaisseau dispose d'un bonus bouclier ou pas (none => pas de bouclier, half => bouclier a 50% de capacite, full => bouclier a 100% de capacite
-    shootRate: possibleSpaceships[level].shootRate // temps entre deux tirs du vaisseau
+    shootRate: possibleSpaceships[level].shootRate, // temps entre deux tirs du vaisseau
+    damage: 1 // les degats du joueur
 };
 let restartButton;
 
@@ -299,6 +309,8 @@ function preload() {
     this.load.image('upgradeLvl3ShieldHalf', './assets/player_level3_with_shield_half.png');
 
     this.load.image('bullet', './assets/round_laser_blue.png');
+    this.load.image('bulletLaser', './assets/laser_blue.png');
+    this.load.image('bulletEnemies', './assets/round_laser_pink.png');
     this.load.image('ennemi1', './assets/ennemi_1@0.75x.png');
     this.load.image('ennemi2', './assets/ennemi_2@0.75x.png');
     this.load.image('ennemi3', './assets/ennemi_3@0.75x.png');
@@ -383,8 +395,8 @@ function create() {
         Extends: Phaser.GameObjects.Image,
 
         initialize: function Bullet(scene) {
-            bulletObject = Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-            this.speed = Phaser.Math.GetSpeed(400, 1);
+            bulletObject = Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bulletEnemies');
+            this.speed = Phaser.Math.GetSpeed(300, 1);
         },
 
         fire: function (x, y) {
@@ -441,8 +453,8 @@ function create() {
     cursors = this.input.keyboard.createCursorKeys();
 
     this.physics.add.overlap(enemiesGroup, bulletsGroup, (enemy, bullet) => {
-        enemy.setData("life", enemy.getData("life") - 1);
-        if (enemy.getData("life") === 0) {
+        enemy.setData("life", enemy.getData("life") - playerSpaceshipInfos.damage);
+        if (enemy.getData("life") <= 0) {
             for (let i = 0; i < enemy.data.values.nbPoints; i++) {
                 upgradesPoints++;
                 playerScore++;
@@ -541,6 +553,17 @@ function update(time, delta) {
         wavesText.setText("Manche : " + nbWavesCleared);
     }
 
+    if (laserShoot === true) {
+        let bullet = bulletsGroup.get();
+        if (bullet) {
+            bullet.setTexture("bulletLaser");
+        }
+    } else {
+        let bullet = bulletsGroup.get();
+        if (bullet) {
+            bullet.setTexture("bullet");
+        }
+    }
 
     updateSpaceship(this);
     drawNewBonus(timerEvent);
@@ -687,7 +710,7 @@ function updateSpaceship(ctx) {
     for (let key in ctx.textures.list) {
         if (ctx.textures.list.hasOwnProperty(key)) {
             if (key === playerSpaceshipInfos.sprites.idle) {
-                playerSpaceship.setSize(ctx.textures.list[key].source[0].width, ctx.textures.list[key].source[0].height);
+                playerSpaceship.setSize(ctx.textures.list[key].source[0].width - 15, ctx.textures.list[key].source[0].height - 15);
             }
         }
     }
