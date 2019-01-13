@@ -13,6 +13,7 @@
 **&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Déplacements des ennemis](#déplacements-des-ennemis)**<br>
 **&nbsp;&nbsp;&nbsp;&nbsp;[Informations complémentaires](#informations-complémentaires)**<br>
 **&nbsp;&nbsp;&nbsp;&nbsp;[Par rapport au jeu](#par-rapport-au-jeu)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Contrôles du jeu](#contrôles-du-jeu)**<br>
 **&nbsp;&nbsp;&nbsp;&nbsp;[Autre](#autre)**<br>
 **&nbsp;&nbsp;&nbsp;&nbsp;[Les difficultés rencontrées](#les-difficultés-rencontrées)**<br>
 **&nbsp;&nbsp;&nbsp;&nbsp;[Les points forts du jeu](#les-points-forts-du-jeu)**<br>
@@ -197,6 +198,14 @@ Leur vitesse de déplacement latérale augmente de 0.1 pixel par ms à la manche
 
 - Lorsque le joueur est touché par une attaque ennemie, il dispose d'un temps d'invulnérabilité de 1.5 secondes
 - Lorsque le joueur perd, il est directement redirigé vers la page des scores
+
+#### Contrôles du jeu
+
+- Le joueur peut déplacer son vaisseau de gauche à droite avec les flèches du clavier.
+- Le joueur peut tirer en appuyant (ou en restant appuyé) sur la flèche du haut ou sur la barre espace.
+- Le joueur peut accélérer son déplacement latéral en restant appuyant sur shift.
+- La touche R du clavier permet de relancer le jeu.
+- La touche O du clavier permet d'éliminer progressivement une partie des ennemis (utilisée surtout pour des tests et pour progresser dans les manches plus rapidement).
 
 #### Autre
 
