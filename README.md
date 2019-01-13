@@ -1,6 +1,22 @@
 # Projet : space-invaders-remastered
 
-[TOC]
+## Table des matières
+**[Equipe](#equipe)**<br>
+**[Le jeu](#le-jeu)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Les différents types de tir](#les-différents-types-de-tir)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Les différents vaisseaux](#les-différents-vaisseaux)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Les différents bonus](#les-différents-bonus)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Génération des bonus](#génération-des-bonus)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Caractéristiques des bonus](#caractéristiques-des-bonus)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Les ennemis](#les-ennemis)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Attaques ennemies](#attaques-ennemies)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Déplacements des ennemis](#déplacements-des-ennemis)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Informations complémentaires](#informations-complémentaires)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Par rapport au jeu](#par-rapport-au-jeu)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Autre](#autre)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Les difficultés rencontrées](#les-difficultés-rencontrées)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Les points forts du jeu](#les-points-forts-du-jeu)**<br>
+**&nbsp;&nbsp;&nbsp;&nbsp;[Les points à améliorer](#les-points-à-améliorer)**<br>
 
 ## Equipe
 
@@ -36,12 +52,12 @@ Nous voulons implémenter plusieurs types de tirs que le joueur pourra obtenir d
   - vitesse de tir plus élevée par rapport à la vitesse de tir actuelle du joueur
   - dure 5 secondes
   - inflige 1 point de dégâts
-  - le joueur peut l'obtenir grâce au bonus suivant ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\fast_shoot.png)
+  - le joueur peut l'obtenir grâce au bonus suivant ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/fast_shoot.png)
 - Le tir avancé :
   - vitesse de tir encore plus élevée
   - dure 3 secondes
   - inflige 2 points de dégâts
-  - le joueur peut l'obtenir grâce au bonus suivant ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\laserShoot.png)
+  - le joueur peut l'obtenir grâce au bonus suivant ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/laserShoot.png)
 
 ### Les différents vaisseaux
 
@@ -53,7 +69,7 @@ Il existe 4 niveaux différents pour le vaisseau:
 
 
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\player_level0_without_shield.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/player_level0_without_shield.png)
 
   - 3 points de vie
   - 800ms de délai entre chaque tir
@@ -61,7 +77,7 @@ Il existe 4 niveaux différents pour le vaisseau:
 
 - Niveau 2 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\player_level1_without_shield.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/player_level1_without_shield.png)
 
   - 4 points de vie
   - 700ms de délai entre chaque tir
@@ -69,7 +85,7 @@ Il existe 4 niveaux différents pour le vaisseau:
 
 - Niveau 3 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\player_level2_without_shield.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/player_level2_without_shield.png)
 
   - 5 points de vie
   - 600ms de délai entre chaque tir
@@ -77,7 +93,7 @@ Il existe 4 niveaux différents pour le vaisseau:
 
 - Niveau 4 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\player_level3_without_shield.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/player_level3_without_shield.png)
 
   - 6 points de vie
   - 500ms de délai entre chaque tir
@@ -85,7 +101,7 @@ Il existe 4 niveaux différents pour le vaisseau:
 
 ### Les différents bonus
 
-#### Génération
+#### Génération des bonus
 
 Suivant le temps défini à la manche active, un bonus (ou malus) est généré aléatoirement parmi la liste de tous les bonus disponibles.
 
@@ -97,37 +113,37 @@ Le temps de génération a été géré comme suit :
 
 - Manche 10 = 1 bonus toutes les 13.5 secondes
 
-#### Caractéristiques
+#### Caractéristiques des bonus
 
 - Bonus 1 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\heal.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/heal.png)
 
   - Regain d'un point de santé
 
 - Bonus 2 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\shield.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/shield.png)
 
   - Octroie un bouclier au joueur lui conférant 2 points de vie supplémentaires
     - Le bonus 1 ne peut cependant pas régénéré un bouclier (seulement les points de vie du vaisseau)
 
 - Bonus 3 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\fast_shoot.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/fast_shoot.png)
 
   - Réduit le délai entre chaque tir du vaisseau actif de 400ms
 
 - Bonus 4 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\laserShoot.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/laserShoot.png)
 
   - Réduit le délai entre chaque tir du vaisseau actif à 75ms quelle que soit la vitesse de tir actuelle
   - Inflige 2 points de dégâts aux ennemis au lieu d'1
 
 - Bonus 5 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\malus.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/malus.png)
 
   - Perte d'un point de santé
 
@@ -135,21 +151,21 @@ Le temps de génération a été géré comme suit :
 
 - Ennemis 1 et 2 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\ennemi_1@0.5x.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/ennemi_1%400.5x.png)
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\ennemi_2@0.5x.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/ennemi_2%400.5x.png)
 
   - Possède 1 point de vie
 
 - Ennemi 3 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\ennemi_3@0.5x.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/ennemi_3%400.5x.png)
 
   - Possède 2 points de vie
 
 - Ennemi 4 :
 
-  ![](C:\Users\Sorel\Documents\MIAGE\tds-js\space-invaders-remastered\assets\ennemi_4@0.5x.png)
+  ![](https://github.com/Mouun/space-invaders-remastered/blob/master/assets/ennemi_4%400.5x.png)
 
   - Possède 3 points de vie
 
